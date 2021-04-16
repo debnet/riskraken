@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block main %}
+    <div class="d-flex justify-content-center">
+        <div class="card shadow rounded my-auto">
+            <div class="card-header text-center">
+                <h3 class="font-weight-bold">
+                    {% if action == "A" %}Attaquer la province{% else %}Déplacer des troupes{% endif %}
+                </h3>
+                <h4>{{ target.get_zone_display }}</h4>
+            </div>
+            <div class="card-body">
+                <div id="info"></div>
+                {% crispy form %}
+                <a href="{% url "front:portal" %}">Retour</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script type="application/javascript">
+        $('#id_source').change(function(e) {
+            let val = $(this).val()
+            if (val) {
+                let url = '{% url "front:info" %}?attacker=' + val + '&defender={{ target.id }}';
+                $.ajax(url).done(function(data) {
+                    let div = $('#info');
+                    div.html(data);
+                    let max = parseInt($('#attacker').val());
+                    let input = $('#id_amount');
+                    input.attr('min', 1).attr('aria-minvalue', 1);
+                    input.attr('max', max).attr('aria-maxvalue', max);
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
+            }
+        }).trigger('change');
+    </script>
+{% endblock %}

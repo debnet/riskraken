@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static compress %}
+
+{% block header %}
+    {% compress css %}
+    <link href="{% static "css/maps.css" %}" rel="stylesheet">
+    <link href="{% static "css/leaflet.css" %}" rel="stylesheet">
+    <link href="{% static "css/leaflet.awesome.markers.css" %}" rel="stylesheet">
+    <link href="{% static "css/leaflet.awesome.rotate.min.css" %}" rel="stylesheet">
+    {% endcompress %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+{% endblock %}
+
+{% block content %}
+    {{ maps.html.render|safe }}
+{% endblock %}
+
+{% block footer %}
+    {% compress js %}
+    <script src="{% static "js/leaflet.js" %}" type="application/javascript"></script>
+    <script src="{% static "js/leaflet.awesome.markers.min.js" %}" type="application/javascript"></script>
+    <script src="{% static "js/d3.min.js" %}" type="application/javascript"></script>
+    {% endcompress %}
+    {% compress js inline %}
+    <script type="application/javascript">
+        L_PREFER_CANVAS = true;
+        L_NO_TOUCH = false;
+        L_DISABLE_3D = false;
+        {{ maps.script.render|safe }}
+    </script>
+    {% endcompress %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block main %}
+    <div class="d-flex justify-content-center">
+        <div class="card shadow rounded my-auto text-center">
+            <div class="card-header">
+                <h3 class="font-weight-bold">À bientôt !</h3>
+            </div>
+            <div class="card-body p-5">
+                Vous vous êtes déconnecté avec succès !
+            </div>
+            <div class="card-footer">
+                <a href="{% url "front:portal" %}">Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

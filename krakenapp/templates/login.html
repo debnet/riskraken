@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block main %}
+    <div class="d-flex justify-content-center">
+        <div class="card shadow rounded my-auto text-center">
+            <div class="card-header">
+                <h3 class="font-weight-bold">Connectez-vous !</h3>
+            </div>
+            <div class="card-body">
+                {% crispy form %}
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'front:register' %}">Vous êtes nouveau ?</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+{% load static compress crispy_forms_tags front %}
+
+{% block content %}
+    <div class="container py-5">
+        <div id="infos" class="card rounded shadow">
+            <div class="card-header text-center">
+                <i class="fa fa-user-tie"></i>
+                <span>Informations</span>
+            </div>
+            <div class="card-body">
+                {% crispy form %}
+            </div>
+        </div>
+        {% if territories %}
+        <div class="py-3"></div>
+        <div id="territories" class="card rounded shadow">
+            <div class="card-header text-center">
+                <i class="fa fa-map-marked-alt"></i>
+                <span>Territoires</span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 row">
+                    <div class="col text-left">
+                        <strong>
+                            <i class="fa fa-chart-line"></i>
+                            Taxes :
+                        </strong>
+                        {% with rate=player.taxes %}
+                        <span class="h5">
+                        <span id="taxerate" class="badge badge-{% if rate %}warning{% else %}danger{% endif %}">
+                            {{ rate|default:0 }}/jour
+                        </span>
+                        </span>
+                        {% endwith %}
+                    </div>
+                    <div class="col text-right">
+                        <strong>
+                            <i class="fa fa-user-plus"></i>
+                            Renforts :
+                        </strong>
+                        {% with rate=player.prods %}
+                        <span class="h5">
+                        <span id="prodrate" class="badge badge-{% if rate %}success{% else %}danger{% endif %}">
+                            {{ rate|default:0 }}/jour
+                        </span>
+                        </span>
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col text-left">
+                        <strong>
+                            <i class="fa fa-coins"></i>
+                            Argent :
+                        </strong>
+                        {% with money=player.money %}
+                        <span class="h5">
+                        <span id="money" class="badge badge-{% if money %}warning{% else %}danger{% endif %}">
+                            {{ money }}
+                        </span>
+                        </span>
+                        {% endwith %}
+                    </div>
+                    <div class="col text-right">
+                        <strong>
+                            <i class="fa fa-users"></i>
+                            Réserve :
+                        </strong>
+                        {% with reserve=player.reserve %}
+                        <span class="h5">
+                        <span id="remaining" class="badge badge-{% if reserve %}success{% else %}danger{% endif %}">
+                            {{ reserve }}
+                        </span>
+                        </span>
+                        {% endwith %}
+                    </div>
+                </div>
+                <form method="post">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Province</th>
+                                <th class="text-center" style="width: 0" title="Forts" data-toggle="tooltip">
+                                    <i class="fab fa-fort-awesome"></i>
+                                </th>
+                                <th class="text-center" style="width: 0" title="Taxes" data-toggle="tooltip">
+                                    <i class="fa fa-coins"></i>
+                                </th>
+                                <th class="text-center" style="width: 0" title="Casernes" data-toggle="tooltip">
+                                    <i class="fa fa-house-user"></i>
+                                </th>
+                                <th class="text-center" style="width: 0" title="Troupes" data-toggle="tooltip">
+                                    <i class="fa fa-users"></i>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for territory in territories %}
+                                <tr>
+                                    <td class="align-middle">
+                                        {{ territory.get_zone_display }}
+                                    </td>
+                                    <td class="text-center align-middle text-nowrap">
+                                        {% check_update territory.id 'forts' territory.forts player.money %}
+                                    </td>
+                                    <td class="text-center align-middle text-nowrap">
+                                        {% check_update territory.id 'taxes' territory.taxes player.money %}
+                                    </td>
+                                    <td class="text-center align-middle text-nowrap">
+                                        {% check_update territory.id 'prods' territory.prods player.money %}
+                                    </td>
+                                    <td class="text-center align-middle text-nowrap">
+                                        <input type="number" style="width: 3em" class="troops"
+                                               data-initial="{{ territory.troops }}"
+                                               name="{{ territory.zone }}" value="{{ territory.troops }}"
+                                               min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}">
+                                        <strong class="ml-1">/</strong>
+                                        {% check_update territory.id 'limit' territory.limit player.money %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <input type="submit" name="troops" value="Renforcer" class="btn btn-primary float-right">
+                    <input type="hidden" id="reserve" name="reserve" value="{{ player.reserve }}">
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+        <div class="py-3"></div>
+        <div id="actions" class="card rounded shadow">
+            <div class="card-header text-center">
+                <i class="fa fa-directions"></i>
+                <span>Actions</span>
+            </div>
+            <div class="card-body">
+                <div class="">
+                    <a href="{% url "front:map_forces" %}?user={{ request.user.id }}" class="btn btn-primary">
+                        <i class="fa fa-route"></i>
+                        <span>Planifier sur la carte</span>
+                    </a>
+                    <a href="{% url "front:map_stats" "troops" %}" target="_blank" class="btn btn-danger"
+                       title="Carte des troupes" data-toggle="tooltip">
+                        <i class="fa fa-users"></i>
+                    </a>
+                    <a href="{% url "front:map_stats" "taxes" %}" target="_blank" class="btn btn-warning"
+                       title="Carte des taxes" data-toggle="tooltip">
+                        <i class="fa fa-coins"></i>
+                    </a>
+                    <a href="{% url "front:map_stats" "forts" %}" target="_blank" class="btn btn-success"
+                       title="Carte des forts" data-toggle="tooltip">
+                        <i class="fab fa-fort-awesome"></i>
+                    </a>
+                    <a href="{% url "front:map_stats" "prods" %}" target="_blank" class="btn btn-info"
+                       title="Carte des casernes" data-toggle="tooltip">
+                        <i class="fa fa-house-user"></i>
+                    </a>
+                </div>
+                {% if actions %}
+                {% regroup actions by date as action_groups %}
+                    <form method="post">
+                    {% csrf_token %}
+                    <table class="table table-bordered table-striped mt-3">
+                        <tbody>
+                            {% for date, actions in action_groups %}
+                                <tr>
+                                    <th colspan="5" class="text-center">
+                                        {{ date }}
+                                    </th>
+                                </tr>
+                                {% for action in actions %}
+                                <tr>
+                                    <th class="text-center align-middle">
+                                        {% if action.type == 'A' %}
+                                            {% if action.player == player %}
+                                                <span class="text-success">
+                                                {% if action.details.conquered %}
+                                                    Conquête
+                                                {% else %}
+                                                    Attaque
+                                                {% endif %}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-danger">
+                                                {% if action.details.conquered %}
+                                                    Conquête hostile
+                                                {% else %}
+                                                    Attaque hostile
+                                                {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            Manoeuvre
+                                        {% endif %}
+                                    </th>
+                                    {% if action.player == player %}
+                                    <td class="align-middle w-50">
+                                        <span>{{ action.source }}</span>
+                                        <br />
+                                        <small class="text-muted">
+                                            {{ action.player }}
+                                        </small>
+                                    </td>
+                                    <td class="align-middle w-50">
+                                        <span>{{ action.target }}</span>
+                                        <br />
+                                        <small class="text-muted">
+                                            {{ action.defender|default_if_none:"---" }}
+                                        </small>
+                                    </td>
+                                    {% else %}
+                                    <td class="align-middle">
+                                        <span>{{ action.target }}</span>
+                                        <br />
+                                        <small class="text-muted">
+                                            {{ action.defender|default_if_none:"---" }}
+                                        </small>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span>{{ action.source }}</span>
+                                        <br />
+                                        <small class="text-muted">
+                                            {{ action.player }}
+                                        </small>
+                                    </td>
+                                    {% endif %}
+                                    <td class="text-center align-middle"
+                                        title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
+                                        <span class="text-nowrap">
+                                            <strong>{{ action.amount }}</strong>
+                                            <i class="fa fa-users"></i>
+                                        </span>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        {% if action.done and action.details %}
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse"
+                                                    href="#details{{ action.id }}" role="button"
+                                                    aria-expanded="false" aria-controls="details{{ action.id }}">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        {% elif not action.done %}
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    name="delete" value="{{ action.id }}"
+                                                    title="Supprimer" data-toggle="tooltip">
+                                                <i class="fa fa-trash-alt"></i>
+                                            </button>
+                                        {% else %}
+                                            <span class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
+                                                <i class="fa fa-check"></i>
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if action.done and action.type == 'A' %}
+                                <tr id="details{{ action.id }}" class="collapse">
+                                    <td colspan="5">
+                                        <table>
+                                            <tr>
+                                                <th>Attaquant</th>
+                                                {% for roll in action.details.attacker_rolls %}
+                                                    <td class="{% if roll.wins %}text-success{% else %}text-danger{% endif %}">
+                                                        <strong class="text-nowrap">
+                                                            <i class="{% if roll.fort %}fab fa-fort-awesome{% else %}fa fa-user{% endif %}"></i>
+                                                            {{ roll.roll }}
+                                                        </strong>
+                                                    </td>
+                                                {% endfor %}
+                                                <th rowspan="2" class="align-middle">Pertes</th>
+                                                <td class="text-{% if action.player == player %}danger{% else %}success{% endif %}">
+                                                    <strong class="text-nowrap">
+                                                        <i class="fa fa-users"></i>
+                                                        {{ action.details.attacker.losses }}
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Défenseur</th>
+                                                {% for roll in action.details.defender_rolls %}
+                                                    <td class="{% if roll.wins %}text-success{% else %}text-danger{% endif %}">
+                                                        <strong class="text-nowrap">
+                                                            <i class="{% if roll.fort %}fab fa-fort-awesome{% else %}fa fa-user{% endif %}"></i>
+                                                            {{ roll.roll }}
+                                                        </strong>
+                                                    </td>
+                                                {% endfor %}
+                                                <td class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
+                                                    <strong class="text-nowrap">
+                                                        <i class="fa fa-users"></i>
+                                                        {{ action.details.defender.losses }}
+                                                    </strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="py-3"></div>
+        <div id="claims" class="card rounded shadow">
+            <div class="card-header text-center">
+                <i class="fa fa-flag"></i>
+                <span>Revendications</span>
+            </div>
+            <div class="card-body">
+                <div class="">
+                    <a href="{% url "front:map_claims" %}?{{ last_claim|date:'U' }}" class="btn btn-primary">
+                        <i class="fa fa-globe-europe"></i>
+                        <span>Revendiquer sur la carte</span>
+                    </a>
+                    <a href="{% url "front:map_stats" "claims" %}" target="_blank" class="btn btn-secondary"
+                       title="Carte des revendications" data-toggle="tooltip">
+                        <i class="fa fa-flag"></i>
+                    </a>
+                </div>
+                {% if claims %}
+                <table class="table table-bordered table-striped mt-3">
+                    <tbody>
+                        {% for claim in claims %}
+                        <tr>
+                            <td class="align-middle">
+                                <span>{{ claim.get_zone_display }}</span>
+                                <br />
+                                <small class="text-muted">{{ claim.get_reason_display }}</small>
+                            </td>
+                            <td style="width: 0" class="text-center align-middle text-nowrap
+                                    {% if claim.count > 1 %}text-danger{% else %}text-success{% endif %}"
+                                title="Nombre de revendications" data-toggle="tooltip" data-placement="left">
+                                <strong>{{ claim.count }}</strong>
+                                <i class="fa fa-flag"></i>
+                            </td>
+                            <td style="width: 0" class="text-center align-middle">
+                                <a href="{% url "front:claim" claim.zone %}"
+                                   class="btn btn-sm btn-success"
+                                    title="Modifier" data-toggle="tooltip">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% compress js %}
+    <script src="{% static "js/portal.js" %}" type="application/javascript"></script>
+    {% endcompress %}
+{% endblock %}

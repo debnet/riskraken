@@ -1,0 +1,55 @@
+{% load front %}
+<table class="table table-bordered table-striped text-center">
+    <thead>
+        <tr>
+            <th style="width: 0"></th>
+            <th class="w-50">{{ attacker.get_zone_display|default_if_none:"---"|reformat }}</th>
+            <th class="w-50">{{ defender.get_zone_display|default_if_none:"---"|reformat }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr title="Utilisateur" data-toggle="tooltip" data-placement="left">
+            <td><i class="fa fa-user-tie"></i></td>
+            <td>{{ attacker.player|default_if_none:"---" }}</td>
+            <td>{{ defender.player|default_if_none:"---" }}</td>
+        </tr>
+        <tr title="Troops" data-toggle="tooltip" data-placement="left">
+            <td class="align-middle"><i class="fa fa-users"></i></td>
+            <td class="font-weight-bold {% if attacker.troops > defender.troops %}text-success{% else %}text-danger{% endif %}">
+                {{ attacker.troops }} / {{ attacker.limit }}
+            </td>
+            <td class="font-weight-bold {% if defender.troops >= attacker.troops %}text-success{% else %}text-danger{% endif %}">
+                {{ defender.troops }} / {{ defender.limit }}
+            </td>
+        </tr>
+        <tr title="Casernes" data-toggle="tooltip" data-placement="left">
+            <td class="align-middle"><i class="fa fa-house-user"></i></td>
+            <td class="font-weight-bold {% if attacker.prods > defender.prods %}text-success{% elif attacker.prods < defender.prods %}text-danger{% endif %}">
+                {{ attacker.prods }}
+            </td>
+            <td class="font-weight-bold {% if defender.prods > attacker.prods %}text-success{% elif defender.prods < attacker.prods %}text-danger{% endif %}">
+                {{ defender.prods }}
+            </td>
+        </tr>
+        <tr title="Taxes" data-toggle="tooltip" data-placement="left">
+            <td class="align-middle"><i class="fa fa-coins"></i></td>
+            <td class="font-weight-bold {% if attacker.taxes > defender.taxes %}text-success{% elif attacker.taxes < defender.taxes %}text-danger{% endif %}">
+                {{ attacker.taxes }}
+            </td>
+            <td class="font-weight-bold {% if defender.taxes > attacker.taxes %}text-success{% elif defender.taxes < attacker.taxes %}text-danger{% endif %}">
+                {{ defender.taxes }}
+            </td>
+        </tr>
+        <tr title="Forts" data-toggle="tooltip" data-placement="left">
+            <td class="align-middle"><i class="fab fa-fort-awesome"></i></td>
+            <td class="font-weight-bold {% if attacker.forts > defender.forts %}text-success{% elif attacker.forts < defender.forts %}text-danger{% endif %}">
+                {{ attacker.forts }}
+            </td>
+            <td class="font-weight-bold {% if defender.forts > attacker.forts %}text-success{% elif defender.forts < attacker.forts %}text-danger{% endif %}">
+                {{ defender.forts }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<input type="hidden" id="attacker" value="{{ attacker.troops }}">
+<input type="hidden" id="defender" value="{{ defender.troops }}">
