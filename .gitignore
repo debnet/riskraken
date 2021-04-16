@@ -1,5 +1,5 @@
-.idea/
-venv/
+/.idea/
+/venv/
 db.sqlite3
-medias/
-static/
+/medias/
+/static/
