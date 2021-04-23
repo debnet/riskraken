@@ -3,7 +3,7 @@ from common.models import CommonModel, Entity, EntityQuerySet
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, OuterRef, Subquery, Sum
+from django.db.models import Count, F, OuterRef, Subquery, Sum
 from django.utils.timezone import now
 
 from krakenapp.enums import REASONS, TYPES, ZONES
@@ -22,6 +22,10 @@ class Player(AbstractUser, Entity):
         default=False, verbose_name="mode automatique",
         help_text="Cochez cette case si vous souhaitez que le jeu prenne les décisions pendant la partie.<br>"
                   "Cependant, toute action planifiée avec ce mode actif ne sera pas prise en compte.")
+    ready = models.BooleanField(
+        default=False, verbose_name="prêt à jouer",
+        help_text="Cochez cette case si vous avez terminé de revendiquer des territoires et que vous êtes prêt à jouer."
+                  "<br>Cette option n'a plus d'effet une fois la partie démarrée.")
 
     def __str__(self):
         if self.full_name:
@@ -36,9 +40,10 @@ class Player(AbstractUser, Entity):
 class ClaimQuerySet(EntityQuerySet):
     def get_ordered(self):
         return self.annotate(
+            power=F('reason') + F('weight'),
             points=Sum('player__claims__reason'),
             claims=Count('player__claims'),
-        ).order_by('zone', 'reason', '-weight', 'points', '-claims', 'id')
+        ).order_by('zone', 'power', 'points', '-claims', 'id')
 
     def with_count(self):
         subquery = Claim.objects.values('zone').filter(zone=OuterRef('zone')).annotate(count=Count('id'))
@@ -56,13 +61,13 @@ class Claim(Entity):
             "Cependant plus vous avez de revendications, plus le poids de vos justifications baisse."))
     infos = models.TextField(
         blank=True, verbose_name="informations complémentaires", help_text=(
-            "Fournissez un complément d'information pour appuyer votre revendication. Par exemple :<br><ul>"
+            "Fournissez un complément d'information pour appuyer votre revendication. Par exemple :<ul>"
             "<li>le nom de la commune où vous avez grandi,</li>"
             "<li>vos liens avec votre famille sur place,</li>"
             "<li>la nature du travail que vous y exerciez,</li>"
             "<li>la durée et/ou l'année de résidence dans cette région.</li></ul>"
             "Ces informations permettent d'ajouter du poids à votre revendication si le territoire est disputé."))
-    weight = models.PositiveSmallIntegerField(default=0, verbose_name="poids")
+    weight = models.SmallIntegerField(default=0, verbose_name="poids")
     objects = ClaimQuerySet.as_manager()
 
     def __str__(self):
@@ -139,6 +144,14 @@ class Action(CommonModel):
 
     def clean(self):
         self.date = self.date or now().date()
+        hostile_actions = Action.objects.filter(type='A', target__player__isnull=False)
+        player_without_troops = Player.objects.values('id').filter(auto=False).annotate(
+            troops=Sum('territories__troops')).filter(troops=0)
+        if self.type == 'A' and self.target.player_id and \
+                not hostile_actions.exists() and player_without_troops.exists():
+            raise ValidationError({
+                '__all__': f"Certains joueurs n'ont pas encore renforcé leurs territoires, il n'est donc "
+                           f"pas encore possible de planifier une action hostile envers un joueur."})
         if self.amount < 0 or self.amount > self.source.troops:
             raise ValidationError({
                 'amount': f"Le nombre de troupes sélectionné est incorrect, "
