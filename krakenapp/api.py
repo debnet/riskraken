@@ -1,5 +1,6 @@
 from common.api.serializers import CommonModelSerializer
-from common.api.utils import auto_view, create_api, disable_relation_fields, to_model_serializer
+from common.api.utils import (
+    auto_view, create_api, disable_relation_fields, to_model_serializer, create_model_serializer)
 from django.urls import path
 from rest_framework import serializers
 
@@ -9,11 +10,12 @@ disable_relation_fields(Player, Action, Claim, Territory)
 router, all_serializers, all_viewsets = create_api(Player, Action, Claim, Territory)
 
 
-@to_model_serializer(Claim)
+@to_model_serializer(Claim, exclude=('current_user', ))
 class ClaimSerializer(CommonModelSerializer):
     power = serializers.IntegerField()
     points = serializers.IntegerField()
     claims = serializers.IntegerField()
+    player = create_model_serializer(Player, exclude=('password', 'groups', 'user_permissions', 'current_user', ))()
 
 
 @auto_view(['GET'], serializer=ClaimSerializer, many=True)

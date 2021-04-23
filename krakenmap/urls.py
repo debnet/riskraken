@@ -14,9 +14,9 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('api/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/auth/', drf_views.obtain_auth_token, name='token'),
+    path('api/', include('krakenapp.api', namespace='front-api')),
     path('api/common/', include('common.api.urls', namespace='common-api')),
     path('common/', include('common.urls', namespace='common')),
-    path('api/', include('krakenapp.api', namespace='front-api')),
     path('', include('krakenapp.urls', namespace='front')),
 ]
 
