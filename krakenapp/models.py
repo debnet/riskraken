@@ -3,7 +3,7 @@ from common.models import CommonModel, Entity, EntityQuerySet
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, F, OuterRef, Subquery, Sum
+from django.db.models import Count, F, OuterRef, Subquery, Sum, Value
 from django.utils.timezone import now
 
 from krakenapp.enums import REASONS, TYPES, ZONES
@@ -40,7 +40,7 @@ class Player(AbstractUser, Entity):
 class ClaimQuerySet(EntityQuerySet):
     def get_ordered(self):
         return self.annotate(
-            power=F('reason') + F('weight'),
+            power=Value(10) - F('reason') + F('weight'),
             points=Sum('player__claims__reason'),
             claims=Count('player__claims'),
         ).order_by('zone', 'power', 'points', '-claims', 'id')
