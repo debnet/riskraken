@@ -43,7 +43,7 @@ class ClaimQuerySet(EntityQuerySet):
             power=Value(10) - F('reason') + F('weight'),
             points=Sum('player__claims__reason'),
             claims=Count('player__claims'),
-        ).order_by('zone', 'power', 'points', '-claims', 'id')
+        ).order_by('zone', '-power', 'points', 'claims', 'id')
 
     def with_count(self):
         subquery = Claim.objects.values('zone').filter(zone=OuterRef('zone')).annotate(count=Count('id'))
