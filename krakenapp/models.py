@@ -142,9 +142,11 @@ class Action(CommonModel):
     done = models.BooleanField(default=False, verbose_name="traité")
 
     def __str__(self):
-        return f'[{self.date}] {self.player} ({self.get_type_display()})'
+        return f'[{self.date}] {self.get_type_display()} de {self.source} vers {self.target} par {self.player}'
 
     def clean(self):
+        if self.pk:
+            return
         self.date = self.date or now().date()
         hostile_actions = Action.objects.filter(type='A', target__player__isnull=False)
         player_without_troops = Player.objects.values('id').filter(auto=False).annotate(
