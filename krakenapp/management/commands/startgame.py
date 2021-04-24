@@ -23,7 +23,7 @@ class Command(BaseCommand):
             territories.append(Territory(
                 zone=claim.zone,
                 player_id=claim.player_id,
-                owner_id=claim.player_id,
+                claim_id=claim.id,
                 troops=0,
                 limit=10))
         for zone, name in ZONES:

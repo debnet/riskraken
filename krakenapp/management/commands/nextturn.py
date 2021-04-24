@@ -8,6 +8,7 @@ from django.db.models import Count, F, Sum
 from django.db.transaction import atomic
 from django.utils.timezone import now
 
+from krakenapp.enums import COSTS
 from krakenapp.models import Action, Player, Territory
 
 
@@ -33,8 +34,9 @@ class Command(BaseCommand):
             for date in Action.objects.values_list('date', flat=True).order_by('date'):
                 Action.objects.filter(date=date).update(date=date - dt.timedelta(days=1))
         previous_date = None
-        actions = Action.objects.select_related('player').filter(done=False, date__lt=now().date()).annotate(
-            defender_is_auto=F('target__player__auto'))
+        actions = Action.objects.select_related('player').filter(
+            done=False, date__lt=now().date()
+        ).annotate(defender_is_auto=F('target__player__auto'))
         # actions = actions.select_related('player', 'source', 'target')
         for action in actions.order_by('-type', '-date', 'creation_date'):
             if action.date != previous_date:
@@ -128,11 +130,21 @@ class Command(BaseCommand):
             prods=Sum('territories__prods'),
             count=Count('territories'))
         for player in players:
-            taxes_bonus, prods_bonus = 0, 0
             if player.auto:
-                pass  # TODO:
-            player.money += player.taxes + taxes_bonus
-            player.reserve += player.prods + prods_bonus
+                get_taxes_cost, get_prods_cost = COSTS['taxes'], COSTS['prods']
+                for territory in Territory.objects.filter(player=player).order_by(
+                        F('claim__reason').desc(nulls_last=True), 'taxes', 'prods'):
+                    taxes_cost, prods_cost = get_taxes_cost(territory.taxes), get_prods_cost(territory.prods)
+                    if territory.taxes > territory.prods and player.money >= prods_cost:
+                        territory.prods += 1
+                        player.money -= prods_cost
+                    elif player.money >= taxes_cost:
+                        territory.taxes += 1
+                        player.money -= taxes_cost
+                    if territory.modified:
+                        territory.save(_reason="Amélioration automatique")
+            player.money += player.taxes
+            player.reserve += player.prods
             if player.modified:
                 player.save(update_fields=('money', 'reserve'), _reason=reason)
         for territory in Territory.objects.filter(player__isnull=True, prods__gt=0):

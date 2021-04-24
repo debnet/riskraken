@@ -33,8 +33,8 @@ class Player(AbstractUser, Entity):
         return super().__str__()
 
     class Meta(AbstractUser.Meta):
-        verbose_name = "utilisateur"
-        verbose_name_plural = "utilisateurs"
+        verbose_name = "joueur"
+        verbose_name_plural = "joueurs"
 
 
 class ClaimQuerySet(EntityQuerySet):
@@ -52,7 +52,7 @@ class ClaimQuerySet(EntityQuerySet):
 
 class Claim(Entity):
     player = models.ForeignKey(
-        Player, on_delete=models.CASCADE, related_name='claims', verbose_name="utilisateur")
+        Player, on_delete=models.CASCADE, related_name='claims', verbose_name="joueur")
     zone = models.CharField(max_length=10, choices=ZONES, verbose_name="zone")
     reason = models.PositiveSmallIntegerField(
         choices=REASONS, verbose_name="motif", help_text=(
@@ -90,15 +90,17 @@ class Claim(Entity):
 
 class Territory(Entity):
     player = models.ForeignKey(
-        Player, blank=True, null=True, on_delete=models.SET_NULL, related_name='territories', verbose_name="utilisateur")
+        Player, blank=True, null=True, on_delete=models.SET_NULL,
+        related_name='territories', verbose_name="joueur")
+    claim = models.OneToOneField(
+        Claim, blank=True, null=True, on_delete=models.SET_NULL,
+        related_name='territory', verbose_name="revendication")
     zone = models.CharField(max_length=10, choices=ZONES, verbose_name="zone")
     troops = models.PositiveSmallIntegerField(default=0, verbose_name="troupes")
     forts = models.PositiveSmallIntegerField(default=0, verbose_name="forts")
     prods = models.PositiveSmallIntegerField(default=0, verbose_name="production")
     taxes = models.PositiveSmallIntegerField(default=0, verbose_name="taxes")
     limit = models.PositiveSmallIntegerField(default=10, verbose_name="limite")
-    owner = models.ForeignKey(
-        Player, blank=True, null=True, on_delete=models.SET_NULL, related_name='+', verbose_name="propriétaire")
 
     def __str__(self):
         return self.get_zone_display()
@@ -118,7 +120,7 @@ class Territory(Entity):
 
 class Action(CommonModel):
     player = models.ForeignKey(
-        Player, on_delete=models.CASCADE, related_name='actions', verbose_name="utilisateur")
+        Player, on_delete=models.CASCADE, related_name='actions', verbose_name="joueur")
     date = models.DateField(blank=True, verbose_name="date")
     type = models.CharField(max_length=1, choices=TYPES, verbose_name="type")
     source = models.ForeignKey(
