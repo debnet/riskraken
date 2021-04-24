@@ -148,5 +148,5 @@ class Command(BaseCommand):
             if player.modified:
                 player.save(update_fields=('money', 'reserve'), _reason=reason)
         for territory in Territory.objects.filter(player__isnull=True, prods__gt=0):
-            territory.troops = min(territory.troops + territory.prods, territory.limit)
+            territory.troops = min(territory.troops + (territory.prods or territory.taxes), territory.limit)
             territory.save(update_fields=('troops', ), _reason=reason)
