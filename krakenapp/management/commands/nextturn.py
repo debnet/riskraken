@@ -38,10 +38,12 @@ class Command(BaseCommand):
             done=False, date__lt=now().date()
         ).annotate(defender_is_auto=F('target__player__auto'))
         # actions = actions.select_related('player', 'source', 'target')
+        if not actions.exists():
+            self.update_players()
         for action in actions.order_by('-type', '-date', 'creation_date'):
             if action.date != previous_date:
                 self.update_players(action.date)
-            action.previous_date = action.date
+            previous_date = action.date
             if action.player_id != action.source.player_id or action.player.auto:
                 action.done = True
                 action.save()
@@ -81,15 +83,15 @@ class Command(BaseCommand):
                 attacker_losses, defender_losses = 0, 0
                 for attacker_roll, defender_roll in zip(attacker_rolls, defender_rolls):
                     if attacker_roll.roll > defender_roll.roll:
+                        attacker_roll.wins = True
                         if defender_roll.fort:
                             continue
                         action.target.troops -= 1
                         defender_losses += 1
-                        attacker_roll.wins = True
                     else:
+                        defender_roll.wins = True
                         action.source.troops -= 1
                         attacker_losses += 1
-                        defender_roll.wins = True
                 attacker_remains, defender_remains = action.amount - attacker_losses, action.target.troops
                 action.details['attacker'].update(
                     remains=attacker_remains,
@@ -119,8 +121,6 @@ class Command(BaseCommand):
                 action.target.save(update_fields=('troops', ), _reason=reason)
             action.done = True
             action.save()
-        else:
-            self.update_players()
 
     def update_players(self, date=None):
         date = date or now().date()

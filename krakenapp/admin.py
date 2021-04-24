@@ -37,7 +37,7 @@ class ClaimAdmin(CommonAdmin):
 create_admin(
     Player, baseclass=PlayerAdmin, date_hierarchy='creation_date',
     list_display=('username', 'full_name', 'reserve', 'money', 'auto', 'ready', ))
-create_admin(Claim, baseclass=ClaimAdmin)
+create_admin(Claim, baseclass=ClaimAdmin, list_filter=('player', 'creation_date', 'modification_date'))
 create_admin(
     Territory, ordering=('zone', ), search_fields=('zone', ),
     list_filter=('player', ), list_display=('zone', 'player', 'troops', 'forts', 'prods', 'taxes', 'limit'))
