@@ -112,9 +112,10 @@
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
                                         <input type="number" style="width: 3em" class="troops"
-                                               data-initial="{{ territory.troops }}"
+                                               data-initial="{{ territory.troops }}" data-limit="{{ territory.limit }}"
                                                name="{{ territory.zone }}" value="{{ territory.troops }}"
-                                               min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}">
+                                               min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}"
+                                               max="{{ territory.limit }}" aria-valuemax="{{ territory.limit }}">
                                         <strong class="ml-1">/</strong>
                                         {% check_update territory.id 'limit' territory.limit player.money %}
                                     </td>

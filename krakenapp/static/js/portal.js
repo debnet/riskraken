@@ -7,8 +7,10 @@ function updateTroops() {
         let initial = parseInt($(e).data('initial'));
         used += (value - initial);
     }).each((i, e) => {
-        let value = parseInt($(e).val());
-        let maximum = value + (reserve - used);
+        let element = $(e);
+        let value = parseInt(element.val());
+        let limit = parseInt(element.data('limit'));
+        let maximum = Math.min(limit, value + (reserve - used));
         $(e).attr('max', maximum);
         $(e).attr('aria-valuemax', maximum);
     });
