@@ -33,8 +33,8 @@ class Command(BaseCommand):
             territories.append(Territory(
                 zone=zone,
                 troops=troops,
-                taxes=randint(troops, 15) // 15,
-                prods=randint(troops, 15) // 15,
+                taxes=randint(troops, 12) // 12,
+                prods=randint(troops, 12) // 12,
                 limit=10))
         territories = sorted(territories, key=lambda t: t.zone)
         Territory.objects.bulk_create(territories)
