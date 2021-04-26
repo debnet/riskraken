@@ -3,6 +3,8 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
+import krakenapp.models
+
 
 class Migration(migrations.Migration):
 
@@ -15,5 +17,11 @@ class Migration(migrations.Migration):
             model_name='player',
             name='capital',
             field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='krakenapp.territory', verbose_name='capitale'),
+        ),
+        migrations.AlterModelManagers(
+            name='player',
+            managers=[
+                ('objects', krakenapp.models.PlayerManager()),
+            ],
         ),
     ]
