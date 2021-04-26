@@ -170,7 +170,7 @@ class Action(CommonModel):
                 raise ValidationError({
                     '__all__': f"Ce joueur n'a pas encore renforcé ses territoires, il n'est donc "
                                f"pas encore possible de planifier une action hostile envers lui."})
-        if 0 < self.amount or self.amount > self.source.troops:
+        if 0 > self.amount or self.amount > self.source.troops:
             raise ValidationError({
                 'amount': f"Le nombre de troupes sélectionné est incorrect, "
                           f"il doit être compris entre 1 et {self.source.troops or 1}."})
