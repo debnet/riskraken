@@ -163,10 +163,10 @@ class Action(CommonModel):
             return
         self.date = self.date or now().date()
         if self.type == 'A' and self.target.player_id:
-            checks = Player.objects.filter(id=self.target.player_id).annotate(
+            checks = Player.objects.filter(id=self.target.player_id, auto=False).annotate(
                 troops=Sum('territories__troops'), actions=Count('actions')
             ).values_list('troops', 'actions').first()
-            if not any(checks):
+            if checks and not any(checks):
                 raise ValidationError({
                     '__all__': f"Ce joueur n'a pas encore renforcé ses territoires, il n'est donc "
                                f"pas encore possible de planifier une action hostile envers lui."})
