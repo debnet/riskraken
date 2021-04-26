@@ -166,7 +166,7 @@ class Command(BaseCommand):
                 player.save(update_fields=('capital', 'money', 'reserve'), _reason=reason)
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
-            territory.troops += troops
+            territory.troops = max(territory.troops + troops, territory.limit)
             territory.extra.update(
                 days=territory.extra.get('days', 0) + 1,
                 money=territory.extra.get('money', 0) + max(territory.taxes, 1))
