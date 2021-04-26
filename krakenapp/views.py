@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Q
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.html import escape
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 
 from krakenapp.enums import COSTS, NEIGHBOURS, ZONES
 from krakenapp.forms import ActionForm, ClaimForm, UserEditForm, UserRegisterForm
@@ -22,7 +22,7 @@ MAPS_CONFIG = dict(
 )
 
 
-@cache_page(0)
+@never_cache
 @login_required
 @render_to('portal.html')
 def portal(request):
@@ -43,11 +43,14 @@ def portal(request):
                 territory = territories.filter(id=territory).first()
                 if not territory:
                     raise AssertionError("ce territoire ne vous appartient pas")
-                cost = COSTS.get(update)(getattr(territory, update))
+                level = getattr(territory, update, 0)
+                cost = COSTS.get(update)(level)
                 if player.money < cost:
                     raise AssertionError("vous n'avez pas assez d'argent pour les travaux")
-                setattr(territory, update, getattr(territory, update) + 1)
-                territory.save(update_fields=(update, ))
+                setattr(territory, update, level + 1)
+                upgrades = territory.extra.setdefault('upgrades', [])
+                upgrades.append(dict(date=datetime.date.today(), type=update, cost=cost, level=level + 1))
+                territory.save(update_fields=(update, 'extra', ))
                 player.money -= cost
                 player.save(update_fields=('money', ))
                 messages.success(request, "Votre territoire a été amélioré avec succès !")
@@ -106,6 +109,7 @@ def portal(request):
     }
 
 
+@cache_page(3600)
 @login_required
 @render_to('map.html')
 def map_claims(request):
@@ -134,6 +138,7 @@ def map_claims(request):
     return {'maps': maps}
 
 
+@cache_page(3600)
 @login_required
 @render_to('map.html')
 def map_forces(request):
@@ -162,6 +167,7 @@ def map_forces(request):
     return {'maps': maps}
 
 
+@cache_page(3600)
 @login_required
 @render_to('map.html')
 def map_stats(request, type):
@@ -196,7 +202,7 @@ def map_stats(request, type):
     return {'maps': maps}
 
 
-@cache_page(0)
+@never_cache
 @login_required
 @render_to('claim.html')
 def claim(request, zone):
@@ -224,7 +230,7 @@ def claim(request, zone):
     return {'form': form, 'zone': zones[zone]}
 
 
-@cache_page(0)
+@never_cache
 @login_required
 @render_to('action.html')
 def action(request, zone):
@@ -269,7 +275,7 @@ def register(request):
     return {'form': form}
 
 
-@cache_page(0)
+@never_cache
 @login_required
 @render_to('info.html')
 def info(request):

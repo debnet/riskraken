@@ -3086,6 +3086,6 @@ TYPES = (
 COSTS = {
     'taxes': lambda level: (level + 1) * (5 + level),
     'prods': lambda level: (level + 1) * (10 + level),
-    'forts': lambda level: (level + 1) * (50 + level),
     'limit': lambda level: ((level + 1) * (10 + level)) // 10,
+    'forts': lambda level: (level + 1) * (50 + level),
 }

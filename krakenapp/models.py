@@ -39,6 +39,7 @@ class Player(AbstractUser, Entity):
         default=False, verbose_name="prêt à jouer",
         help_text="Cochez cette case si vous avez terminé de revendiquer des territoires et que vous êtes prêt à jouer."
                   "<br>Cette option n'a plus d'effet une fois la partie démarrée.")
+    extra = JsonField(blank=True, default=dict, verbose_name="extra")
     objects = PlayerManager()
 
     def __str__(self):
@@ -115,6 +116,7 @@ class Territory(Entity):
     prods = models.PositiveSmallIntegerField(default=0, verbose_name="casernes")
     taxes = models.PositiveSmallIntegerField(default=0, verbose_name="taxes")
     limit = models.PositiveSmallIntegerField(default=10, verbose_name="limite")
+    extra = JsonField(blank=True, default=dict, verbose_name="extra")
 
     def __str__(self):
         return self.get_zone_display()

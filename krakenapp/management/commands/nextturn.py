@@ -1,3 +1,4 @@
+import datetime
 from dataclasses import dataclass, asdict
 import datetime as dt
 from random import randint
@@ -6,7 +7,6 @@ from itertools import chain
 from django.core.management.base import BaseCommand
 from django.db.models import F
 from django.db.transaction import atomic
-from django.utils.timezone import now
 
 from krakenapp.enums import COSTS
 from krakenapp.models import Action, Player, Territory
@@ -34,7 +34,7 @@ class Command(BaseCommand):
             for date in Action.objects.values_list('date', flat=True).order_by('date'):
                 Action.objects.filter(date=date).update(date=date - dt.timedelta(days=1))
         previous_date = None
-        actions = Action.objects.select_related('player').filter(done=False, date__lt=now().date())
+        actions = Action.objects.select_related('player').filter(done=False, date__lt=datetime.date.today())
         if not actions.exists():
             self.update_players()
         for action in actions.order_by('-type', '-date', 'creation_date'):
@@ -141,7 +141,7 @@ class Command(BaseCommand):
             action.save()
 
     def update_players(self, date=None):
-        date = date or now().date()
+        date = date or datetime.date.today()
         reason = f"Taxes et conscription du {date:%x}"
         players = Player.objects.with_rates()
         for player in players:
@@ -159,12 +159,25 @@ class Command(BaseCommand):
                         territory.taxes += 1
                         player.money -= taxes_cost
                     if territory.modified:
-                        territory.save(_reason="Amélioration automatique")
+                        territory.save(_reason=f"Amélioration automatique du {date:%x}")
             player.money += player.taxes
             player.reserve += player.prods
             if player.modified:
                 player.save(update_fields=('capital', 'money', 'reserve'), _reason=reason)
-        for territory in Territory.objects.filter(player__isnull=True, prods__gt=0):
-            territory.troops = min(territory.troops + (territory.prods or territory.taxes), territory.limit)
-            if territory.modified:
-                territory.save(update_fields=('troops', ), _ignore_log=True)
+        for territory in Territory.objects.filter(player__isnull=True):
+            troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
+            territory.troops += troops
+            territory.extra.update(
+                days=territory.extra.get('days', 0) + 1,
+                money=territory.extra.get('money', 0) + max(territory.taxes, 1))
+            money = territory.extra['money']
+            for code, func in reversed(COSTS.items()):
+                level = getattr(territory, code, 0)
+                cost = func(level)
+                if cost <= money:
+                    setattr(territory, code, level + 1)
+                    territory.extra.update(money=money - cost)
+                    upgrades = territory.extra.setdefault('upgrades', [])
+                    upgrades.append(dict(date=date, type=code, cost=cost, level=level + 1))
+                    break
+            territory.save(_ignore_log=True)
