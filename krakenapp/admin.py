@@ -49,8 +49,14 @@ class ActionAdmin(CommonAdmin):
     pass
 
 
-create_admin(Claim, baseclass=ClaimAdmin, list_filter=('player', 'creation_date', 'modification_date'))
 create_admin(
-    Territory, baseclass=TerritoryAdmin, ordering=('zone', ), search_fields=('zone', ), list_filter=('player', ),
+    Claim, baseclass=ClaimAdmin,
+    list_filter=('creation_date', 'modification_date', 'player', ))
+create_admin(
+    Territory, baseclass=TerritoryAdmin,
+    ordering=('zone', ), search_fields=('zone', ), list_filter=('player', ),
     list_display=('zone', 'player', 'troops', 'forts', 'prods', 'taxes', 'limit', ))
-create_admin(Action, baseclass=ActionAdmin, autocomplete_fields=('player', 'defender', 'source', 'target', ))
+create_admin(
+    Action, baseclass=ActionAdmin,
+    list_filter=('date', 'creation_date', 'type', 'done', 'player', 'defender', ),
+    autocomplete_fields=('player', 'defender', 'source', 'target', ))
