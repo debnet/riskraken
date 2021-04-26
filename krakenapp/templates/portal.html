@@ -76,21 +76,21 @@
                         {% endwith %}
                     </div>
                 </div>
-                <form method="post">
+                <form method="post" action="{{ request.get_full_path }}">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th class="text-center" style="width: 0" title="Capitale" data-toggle="tooltip">
+                                <th class="text-center d-none d-sm-table-cell" style="width: 0" title="Capitale" data-toggle="tooltip">
                                     <i class="fas fa-star"></i>
                                 </th>
                                 <th>Province</th>
-                                <th class="text-center" style="width: 0" title="Forts" data-toggle="tooltip">
+                                <th class="text-center d-none d-sm-table-cell" style="width: 0" title="Forts" data-toggle="tooltip">
                                     <i class="fab fa-fort-awesome"></i>
                                 </th>
-                                <th class="text-center" style="width: 0" title="Taxes" data-toggle="tooltip">
+                                <th class="text-center d-none d-sm-table-cell" style="width: 0" title="Taxes" data-toggle="tooltip">
                                     <i class="fa fa-coins"></i>
                                 </th>
-                                <th class="text-center" style="width: 0" title="Casernes" data-toggle="tooltip">
+                                <th class="text-center d-none d-sm-table-cell" style="width: 0" title="Casernes" data-toggle="tooltip">
                                     <i class="fa fa-house-user"></i>
                                 </th>
                                 <th class="text-center" style="width: 0" title="Troupes" data-toggle="tooltip">
@@ -101,7 +101,7 @@
                         <tbody>
                             {% for territory in territories %}
                                 <tr>
-                                    <td class="text-center align-middle text-nowrap">
+                                    <td class="text-center align-middle text-nowrap d-none d-sm-table-cell">
                                         {% if not player.capital %}
                                             <button type="submit" name="capital" value="{{ territory.id }}"
                                                     class="btn btn-sm btn-secondary" title="Etablir la capitale ici !"
@@ -118,13 +118,13 @@
                                     <td class="align-middle">
                                         {{ territory.get_zone_display }}
                                     </td>
-                                    <td class="text-center align-middle text-nowrap">
+                                    <td class="text-center align-middle text-nowrap d-none d-sm-table-cell">
                                         {% check_update territory.id "Forts" 'forts' territory.forts player.money %}
                                     </td>
-                                    <td class="text-center align-middle text-nowrap">
+                                    <td class="text-center align-middle text-nowrap d-none d-sm-table-cell">
                                         {% check_update territory.id "Taxes" 'taxes' territory.taxes player.money %}
                                     </td>
-                                    <td class="text-center align-middle text-nowrap">
+                                    <td class="text-center align-middle text-nowrap d-none d-sm-table-cell">
                                         {% check_update territory.id "Casernes" 'prods' territory.prods player.money %}
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
@@ -133,8 +133,10 @@
                                                name="{{ territory.zone }}" value="{{ territory.troops }}"
                                                min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}"
                                                max="{{ territory.limit }}" aria-valuemax="{{ territory.limit }}">
-                                        <strong class="ml-1">/</strong>
-                                        {% check_update territory.id "Limite" 'limit' territory.limit player.money %}
+                                        <div class="d-none d-sm-inline">
+                                            <strong class="ml-1">/</strong>
+                                            {% check_update territory.id "Limite" 'limit' territory.limit player.money %}
+                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -158,26 +160,30 @@
                         <i class="fa fa-route"></i>
                         <span>Planifier sur la carte</span>
                     </a>
-                    <a href="{% url "front:map_stats" "troops" %}" target="_blank" class="btn btn-danger"
+                    <a href="{% url "front:map_stats" "troops" %}" target="_blank"
+                       class="btn btn-danger d-none d-sm-inline"
                        title="Carte des troupes" data-toggle="tooltip">
                         <i class="fa fa-users"></i>
                     </a>
-                    <a href="{% url "front:map_stats" "taxes" %}" target="_blank" class="btn btn-warning"
+                    <a href="{% url "front:map_stats" "taxes" %}" target="_blank"
+                       class="btn btn-warning d-none d-sm-inline"
                        title="Carte des taxes" data-toggle="tooltip">
                         <i class="fa fa-coins"></i>
                     </a>
-                    <a href="{% url "front:map_stats" "forts" %}" target="_blank" class="btn btn-success"
+                    <a href="{% url "front:map_stats" "forts" %}" target="_blank"
+                       class="btn btn-success d-none d-sm-inline"
                        title="Carte des forts" data-toggle="tooltip">
                         <i class="fab fa-fort-awesome"></i>
                     </a>
-                    <a href="{% url "front:map_stats" "prods" %}" target="_blank" class="btn btn-info"
+                    <a href="{% url "front:map_stats" "prods" %}" target="_blank"
+                       class="btn btn-info d-none d-sm-inline"
                        title="Carte des casernes" data-toggle="tooltip">
                         <i class="fa fa-house-user"></i>
                     </a>
                 </div>
                 {% if actions %}
                 {% regroup actions by date as action_groups %}
-                    <form method="post">
+                    <form method="post" action="{{ request.get_full_path }}">
                     {% csrf_token %}
                     <table class="table table-bordered table-striped mt-3">
                         <tbody>
@@ -211,9 +217,12 @@
                                         {% else %}
                                             Manœuvre
                                         {% endif %}
+                                        {% if action.details.cancelled %}
+                                            <span class="text-muted">annulée</span>
+                                        {% endif %}
                                     </th>
                                     {% if action.player == player %}
-                                    <td class="align-middle w-50">
+                                    <td class="align-middle w-50 d-none d-sm-table-cell">
                                         <span>{{ action.source }}</span>
                                         <br />
                                         <small class="text-muted">
@@ -228,14 +237,14 @@
                                         </small>
                                     </td>
                                     {% else %}
-                                    <td class="align-middle">
+                                    <td class="align-middle w-50 d-none d-sm-table-cell">
                                         <span>{{ action.target }}</span>
                                         <br />
                                         <small class="text-muted">
                                             {{ action.defender|default_if_none:"---" }}
                                         </small>
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle w-50">
                                         <span>{{ action.source }}</span>
                                         <br />
                                         <small class="text-muted">
@@ -243,7 +252,7 @@
                                         </small>
                                     </td>
                                     {% endif %}
-                                    <td class="text-center align-middle"
+                                    <td class="text-center align-middle d-none d-sm-table-cell"
                                         title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
                                         <span class="text-nowrap">
                                             <strong>{{ action.amount }}</strong>
@@ -273,6 +282,9 @@
                                 {% if action.done and action.type == 'A' %}
                                 <tr id="details{{ action.id }}" class="collapse">
                                     <td colspan="5">
+                                        {% if action.details.cancelled and action.details.reason %}
+                                            <span class="text-muted">{{ action.details.reason }}</span>
+                                        {% else %}
                                         <table>
                                             <tr>
                                                 <th>Attaquant</th>
@@ -310,6 +322,7 @@
                                                 </td>
                                             </tr>
                                         </table>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endif %}
@@ -330,7 +343,7 @@
             </div>
             <div class="card-body">
                 <div class="">
-                    <a href="{% url "front:map_claims" %}?{{ last_claim|date:'U' }}" class="btn btn-primary">
+                    <a href="{% url "front:map_claims" %}?last={{ last_claim|date:'U' }}" class="btn btn-primary">
                         <i class="fa fa-globe-europe"></i>
                         <span>Revendiquer sur la carte</span>
                     </a>
@@ -349,7 +362,7 @@
                                 <br />
                                 <small class="text-muted">{{ claim.get_reason_display }}</small>
                             </td>
-                            <td style="width: 0" class="text-center align-middle text-nowrap
+                            <td style="width: 0" class="text-center align-middle text-nowrap d-none d-sm-table-cell
                                     {% if claim.count > 1 %}text-danger{% else %}text-success{% endif %}"
                                 title="Nombre de revendications" data-toggle="tooltip" data-placement="left">
                                 <strong>{{ claim.count }}</strong>

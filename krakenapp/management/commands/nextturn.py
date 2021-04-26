@@ -43,15 +43,23 @@ class Command(BaseCommand):
             previous_date = action.date
             if action.player_id != action.source.player_id or action.player.auto:
                 action.done = True
+                action.details.update(cancelled=True, reason="Le territoire n'appartient plus au joueur d'origine.")
                 action.save()
                 continue
             if action.type == 'A':
                 reason = f"Attaque #{action.id} du {action.date:%x}"
                 action.defender = action.target.player
+                if action.player == action.defender:
+                    action.done = True
+                    action.details.update(cancelled=True, reason="Attaque lancée sur un territoire allié.")
+                    action.save()
+                    continue
                 attacker_troops = int(min(action.amount, action.source.troops))
                 if not attacker_troops:
                     action.done = True
+                    action.details.update(cancelled=True, reason="Plus assez de troupes disponibles pour attaquer.")
                     action.save()
+                    continue
                 is_auto = bool(action.defender and action.defender.auto)
                 is_capital = bool(action.defender and action.defender.capital == action.target)
                 if is_auto:
@@ -69,6 +77,7 @@ class Command(BaseCommand):
                     auto=is_auto,
                     capital=is_capital,
                     conquered=False,
+                    cancelled=False,
                     attacker=dict(
                         troops=action.source.troops,
                         sent=attacker_troops),

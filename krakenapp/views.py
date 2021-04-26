@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Q
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.html import escape
-from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
 
 from krakenapp.enums import COSTS, NEIGHBOURS, ZONES
@@ -27,11 +26,14 @@ MAPS_CONFIG = dict(
 @login_required
 @render_to('portal.html')
 def portal(request):
-    player = Player.objects.with_rates().get(id=request.user.id)
+    player_id = request.user.id
+    if request.user.is_superuser and 'user' in request.GET:
+        player_id = request.GET['user']
+    player = Player.objects.with_rates().get(id=player_id)
     claims = player.claims.with_count().order_by('reason')
     territories = player.territories.order_by('zone')
     actions = Action.objects.select_related('player', 'source', 'target', 'defender').filter(
-        Q(player=player) | Q(defender=player, done=True), date__gte=now().date() - datetime.timedelta(days=5)
+        Q(player=player) | Q(defender=player, done=True), date__gte=datetime.date.today() - datetime.timedelta(days=5)
     ).order_by('-date', '-type')
     form = UserEditForm(instance=player)
     if request.method == 'POST':
@@ -238,7 +240,7 @@ def action(request, zone):
         messages.warning(request, "Aucune province voisine n'est disponible pour cette action !")
         return redirect('front:portal')
         # raise Http404("Aucune province voisine n'est disponible pour cette action !")
-    initial = {'date': now().date(), 'player': request.user, 'target': territory, 'type': action_type}
+    initial = {'date': datetime.date.today(), 'player': request.user, 'target': territory, 'type': action_type}
     if request.method == 'POST':
         form = ActionForm(request.POST)
         form.fields['source'].queryset = neighbours
