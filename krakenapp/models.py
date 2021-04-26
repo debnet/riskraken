@@ -162,18 +162,18 @@ class Action(CommonModel):
         if self.pk:
             return
         self.date = self.date or now().date()
-        hostile_actions = Action.objects.filter(type='A', target__player__isnull=False)
-        player_without_troops = Player.objects.values('id').filter(auto=False).annotate(
-            troops=Sum('territories__troops')).filter(troops=0)
-        if self.type == 'A' and self.target.player_id and \
-                not hostile_actions.exists() and player_without_troops.exists():
-            raise ValidationError({
-                '__all__': f"Certains joueurs n'ont pas encore renforcé leurs territoires, il n'est donc "
-                           f"pas encore possible de planifier une action hostile envers un joueur."})
-        if self.amount < 0 or self.amount > self.source.troops:
+        if self.type == 'A' and self.target.player_id:
+            checks = Player.objects.filter(id=self.target.player_id).annotate(
+                troops=Sum('territories__troops'), actions=Count('actions')
+            ).values_list('troops', 'actions').first()
+            if not any(checks):
+                raise ValidationError({
+                    '__all__': f"Ce joueur n'a pas encore renforcé ses territoires, il n'est donc "
+                               f"pas encore possible de planifier une action hostile envers lui."})
+        if 0 < self.amount or self.amount > self.source.troops:
             raise ValidationError({
                 'amount': f"Le nombre de troupes sélectionné est incorrect, "
-                          f"il doit être compris entre 1 et {self.source.troops}."})
+                          f"il doit être compris entre 1 et {self.source.troops or 1}."})
 
     class Meta:
         verbose_name = "action"
