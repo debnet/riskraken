@@ -13,7 +13,7 @@
             <td>{{ attacker.player|default_if_none:"---" }}</td>
             <td>{{ defender.player|default_if_none:"---" }}</td>
         </tr>
-        <tr title="Troops" data-toggle="tooltip" data-placement="left">
+        <tr title="Troupes" data-toggle="tooltip" data-placement="left">
             <td class="align-middle"><i class="fa fa-users"></i></td>
             <td class="font-weight-bold {% if attacker.troops > defender.troops %}text-success{% else %}text-danger{% endif %}">
                 {{ attacker.troops }} / {{ attacker.limit }}
