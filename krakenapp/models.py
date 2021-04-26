@@ -1,12 +1,23 @@
 from common.fields import JsonField
 from common.models import CommonModel, Entity, EntityQuerySet
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, F, OuterRef, Subquery, Sum, Value
+from django.db.models import Case, Count, F, OuterRef, Subquery, Sum, Value, When
 from django.utils.timezone import now
 
 from krakenapp.enums import REASONS, TYPES, ZONES
+
+
+class PlayerManager(UserManager):
+    def with_rates(self):
+        return self.annotate(
+            bonus=Case(When(capital__isnull=False, then=1), default=0),
+        ).annotate(
+            taxes=Sum('territories__taxes') + F('bonus'),
+            prods=Sum('territories__prods') + F('bonus'),
+            count=Count('territories'),
+        )
 
 
 class Player(AbstractUser, Entity):
@@ -16,6 +27,8 @@ class Player(AbstractUser, Entity):
     color = models.CharField(
         max_length=20, blank=True, verbose_name="couleur",
         help_text="Couleur qui sera utilisée pour représenter vos territoires et/ou revendications.")
+    capital = models.OneToOneField(
+        'Territory', on_delete=models.SET_NULL, blank=True, null=True, related_name='+', verbose_name="capitale")
     reserve = models.PositiveIntegerField(default=0, verbose_name="renforts")
     money = models.PositiveIntegerField(default=0, verbose_name="argent")
     auto = models.BooleanField(
@@ -26,6 +39,7 @@ class Player(AbstractUser, Entity):
         default=False, verbose_name="prêt à jouer",
         help_text="Cochez cette case si vous avez terminé de revendiquer des territoires et que vous êtes prêt à jouer."
                   "<br>Cette option n'a plus d'effet une fois la partie démarrée.")
+    objects = PlayerManager()
 
     def __str__(self):
         if self.full_name:
@@ -52,7 +66,7 @@ class ClaimQuerySet(EntityQuerySet):
 
 class Claim(Entity):
     player = models.ForeignKey(
-        Player, on_delete=models.CASCADE, related_name='claims', verbose_name="joueur")
+        'Player', on_delete=models.CASCADE, related_name='claims', verbose_name="joueur")
     zone = models.CharField(max_length=10, choices=ZONES, verbose_name="zone")
     reason = models.PositiveSmallIntegerField(
         choices=REASONS, verbose_name="motif", help_text=(
@@ -90,15 +104,15 @@ class Claim(Entity):
 
 class Territory(Entity):
     player = models.ForeignKey(
-        Player, blank=True, null=True, on_delete=models.SET_NULL,
+        'Player', blank=True, null=True, on_delete=models.SET_NULL,
         related_name='territories', verbose_name="joueur")
     claim = models.OneToOneField(
-        Claim, blank=True, null=True, on_delete=models.SET_NULL,
+        'Claim', blank=True, null=True, on_delete=models.SET_NULL,
         related_name='territory', verbose_name="revendication")
     zone = models.CharField(max_length=10, choices=ZONES, verbose_name="zone")
     troops = models.PositiveSmallIntegerField(default=0, verbose_name="troupes")
     forts = models.PositiveSmallIntegerField(default=0, verbose_name="forts")
-    prods = models.PositiveSmallIntegerField(default=0, verbose_name="production")
+    prods = models.PositiveSmallIntegerField(default=0, verbose_name="casernes")
     taxes = models.PositiveSmallIntegerField(default=0, verbose_name="taxes")
     limit = models.PositiveSmallIntegerField(default=10, verbose_name="limite")
 
@@ -120,14 +134,14 @@ class Territory(Entity):
 
 class Action(CommonModel):
     player = models.ForeignKey(
-        Player, on_delete=models.CASCADE, related_name='actions', verbose_name="joueur")
+        'Player', on_delete=models.CASCADE, related_name='actions', verbose_name="joueur")
     date = models.DateField(blank=True, verbose_name="date")
     type = models.CharField(max_length=1, choices=TYPES, verbose_name="type")
     source = models.ForeignKey(
-        Territory, on_delete=models.CASCADE, related_name='+', verbose_name="source",
+        'Territory', on_delete=models.CASCADE, related_name='+', verbose_name="source",
         help_text="Sélectionnez la province voisine d'où vont partir les troupes pour arriver à destination.")
     target = models.ForeignKey(
-        Territory, on_delete=models.CASCADE, related_name='+', verbose_name="cible",
+        'Territory', on_delete=models.CASCADE, related_name='+', verbose_name="cible",
         help_text="Sélectionner la province de destination des troupes impliquées dans l'action.")
     amount = models.PositiveSmallIntegerField(
         default=1, verbose_name="quantité",
@@ -136,7 +150,7 @@ class Action(CommonModel):
                   "<strong>Attention !</strong> Si vos troupes sont réduites par une attaque, "
                   "la réserve sera utilisée pour compenser les pertes.")
     defender = models.ForeignKey(
-        Player, blank=True, null=True, on_delete=models.SET_NULL, related_name='attacks', verbose_name="défenseur")
+        'Player', blank=True, null=True, on_delete=models.SET_NULL, related_name='attacks', verbose_name="défenseur")
     details = JsonField(blank=True, default=dict, verbose_name="détails")
     creation_date = models.DateTimeField(auto_now=True, verbose_name="date de planification")
     done = models.BooleanField(default=False, verbose_name="traité")

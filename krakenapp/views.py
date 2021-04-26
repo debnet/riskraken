@@ -5,7 +5,7 @@ from common.utils import render_to
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Max, Sum, Q
+from django.db.models import Count, Max, Q
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.html import escape
 from django.utils.timezone import now
@@ -27,10 +27,7 @@ MAPS_CONFIG = dict(
 @login_required
 @render_to('portal.html')
 def portal(request):
-    player = Player.objects.annotate(
-        taxes=Sum('territories__taxes'),
-        prods=Sum('territories__prods'),
-    ).get(id=request.user.id)
+    player = Player.objects.with_rates().get(id=request.user.id)
     claims = player.claims.with_count().order_by('reason')
     territories = player.territories.order_by('zone')
     actions = Action.objects.select_related('player', 'source', 'target', 'defender').filter(
@@ -80,6 +77,16 @@ def portal(request):
         elif 'delete' in request.POST:
             Action.objects.filter(player=player, id=request.POST['delete']).delete()
             messages.success(request, "Votre action planifiée a été supprimée avec succès !")
+        elif 'capital' in request.POST:
+            territory = Territory.objects.filter(
+                player=player, player__capital__isnull=True, id=request.POST['capital']
+            ).first()
+            if territory:
+                player.capital = territory
+                player.save(update_fields=('capital', ))
+                messages.success(request, f"Votre nouvelle capitale a été installée à <strong>{territory}</strong> !")
+            else:
+                messages.warning(request, "Le territoire sélectionné ne peut être défini comme votre capitale.")
         else:
             form = UserEditForm(request.POST, instance=player)
             if form.is_valid():
@@ -138,7 +145,7 @@ def map_forces(request):
             "opacity": 0.25}
         popup = folium.GeoJsonPopup(
             fields=("name", "province", "region", "owner", "troops", "forts", "taxes", "prods", "url"),
-            aliases=("Nom", "Province", "Région", "Propriétaire", "Troops", "Forts", "Taxes", "Casernes", "Action"))
+            aliases=("Nom", "Province", "Région", "Propriétaire", "Troupes", "Forts", "Taxes", "Casernes", "Action"))
         folium.GeoJson(
             zones,
             tooltip=escape(str(player)) if player else None,

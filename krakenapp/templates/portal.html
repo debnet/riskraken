@@ -80,6 +80,9 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th class="text-center" style="width: 0" title="Capitale" data-toggle="tooltip">
+                                    <i class="fas fa-star"></i>
+                                </th>
                                 <th>Province</th>
                                 <th class="text-center" style="width: 0" title="Forts" data-toggle="tooltip">
                                     <i class="fab fa-fort-awesome"></i>
@@ -98,17 +101,31 @@
                         <tbody>
                             {% for territory in territories %}
                                 <tr>
+                                    <td class="text-center align-middle text-nowrap">
+                                        {% if not player.capital %}
+                                            <button type="submit" name="capital" value="{{ territory.id }}"
+                                                    class="btn btn-sm btn-secondary" title="Etablir la capitale ici !"
+                                                    data-toggle="tooltip" data-placement="top" data-html="true">
+                                                <i class="fas fa-star"></i>
+                                            </button>
+                                        {% elif player.capital == territory %}
+                                            <span title="<strong>Capitale</strong><br>1 <i class='fa fa-coins'></i> et 1 <i class='fa fa-user'></i> par jour"
+                                                  data-toggle="tooltip" data-placement="top" data-html="true">
+                                                <i class="fas fa-star"></i>
+                                            </span>
+                                        {% endif %}
+                                    </td>
                                     <td class="align-middle">
                                         {{ territory.get_zone_display }}
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
-                                        {% check_update territory.id 'forts' territory.forts player.money %}
+                                        {% check_update territory.id "Forts" 'forts' territory.forts player.money %}
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
-                                        {% check_update territory.id 'taxes' territory.taxes player.money %}
+                                        {% check_update territory.id "Taxes" 'taxes' territory.taxes player.money %}
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
-                                        {% check_update territory.id 'prods' territory.prods player.money %}
+                                        {% check_update territory.id "Casernes" 'prods' territory.prods player.money %}
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
                                         <input type="number" style="width: 3em" class="troops"
@@ -117,7 +134,7 @@
                                                min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}"
                                                max="{{ territory.limit }}" aria-valuemax="{{ territory.limit }}">
                                         <strong class="ml-1">/</strong>
-                                        {% check_update territory.id 'limit' territory.limit player.money %}
+                                        {% check_update territory.id "Limite" 'limit' territory.limit player.money %}
                                     </td>
                                 </tr>
                             {% endfor %}

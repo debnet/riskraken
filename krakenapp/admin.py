@@ -1,14 +1,14 @@
 from common.admin import create_admin, CommonAdmin
 from django.contrib.auth.admin import UserAdmin
 
-from krakenapp.models import Action, Claim,  Player, Territory
+from krakenapp.models import Action, Claim, Player, Territory
 
 
 class PlayerAdmin(UserAdmin):
-    list_display = ('id', 'username', 'full_name', 'reserve', 'money', 'auto', 'ready', )
+    list_display = ('id', 'username', 'full_name', 'capital', 'reserve', 'money', 'auto', 'ready', )
     list_display_links = ('username', )
     fieldsets = UserAdmin.fieldsets + (
-        ("Kraken", {'fields': ('full_name', 'color', 'reserve', 'money', 'auto', 'ready', )}), )
+        ("Risk", {'fields': ('full_name', 'color', 'capital', 'reserve', 'money', 'auto', 'ready', )}), )
     filter_horizontal = ('groups', 'user_permissions', )
     search_fields = UserAdmin.search_fields + ('full_name', )
 
@@ -35,8 +35,9 @@ class ClaimAdmin(CommonAdmin):
 
 
 create_admin(
-    Player, baseclass=PlayerAdmin, date_hierarchy='creation_date',
-    list_display=('username', 'full_name', 'reserve', 'money', 'auto', 'ready', ))
+    Player, baseclass=PlayerAdmin, date_hierarchy='creation_date', autocomplete_fields=('capital', ),
+    list_display=('id', 'full_name', 'capital', 'reserve', 'money', 'auto', 'ready', ),
+    list_display_links=('id', 'full_name', ))
 create_admin(Claim, baseclass=ClaimAdmin, list_filter=('player', 'creation_date', 'modification_date'))
 create_admin(
     Territory, ordering=('zone', ), search_fields=('zone', ),
