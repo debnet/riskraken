@@ -12,6 +12,10 @@
 {% endblock %}
 
 {% block content %}
+    <a class="btn btn-sm btn-light" href="{% url "front:portal" %}"
+       style="position: absolute; bottom: 5px; left: 5px; z-index: 10000">
+        <i class="fa fa-home"></i> Retour
+    </a>
     {{ maps.html.render|safe }}
 {% endblock %}
 
