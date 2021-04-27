@@ -154,6 +154,8 @@ class Command(BaseCommand):
         reason = f"Taxes et conscription du {date:%x}"
         players = Player.objects.with_rates()
         for player in players:
+            if not player.count:
+                continue
             if player.auto:
                 get_taxes_cost, get_prods_cost = COSTS['taxes'], COSTS['prods']
                 for territory in Territory.objects.filter(player=player).order_by(
@@ -169,8 +171,8 @@ class Command(BaseCommand):
                         player.money -= taxes_cost
                     if territory.modified:
                         territory.save(_reason=f"Amélioration automatique du {date:%x}")
-            player.money += player.taxes
-            player.reserve += player.prods
+            player.money += player.taxes or 0
+            player.reserve += player.prods or 0
             player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
