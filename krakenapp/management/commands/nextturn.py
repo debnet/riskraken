@@ -41,9 +41,18 @@ class Command(BaseCommand):
             if action.date != previous_date:
                 self.update_players(action.date)
             previous_date = action.date
-            if action.player_id != action.source.player_id or action.player.auto:
+            if action.player_id != action.source.player_id:
                 action.done = True
-                action.details.update(cancelled=True, reason="Le territoire n'appartient plus au joueur d'origine.")
+                action.details.update(
+                    cancelled=True,
+                    reason="Le territoire n'appartient plus au joueur d'origine.")
+                action.save()
+                continue
+            if action.player.auto:
+                action.done = True
+                action.details.update(
+                    cancelled=True,
+                    reason="Aucune action ne peut être planifiée en mode automatique.")
                 action.save()
                 continue
             if action.type == 'A':
