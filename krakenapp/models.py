@@ -20,7 +20,7 @@ class PlayerManager(UserManager):
         )
 
 
-class Player(AbstractUser, Entity):
+class Player(AbstractUser):
     full_name = models.CharField(
         max_length=200, blank=True, verbose_name="nom",
         help_text="Si renseigné, ce nom s'affichera à la place de votre pseudo sur les cartes et le portail.")

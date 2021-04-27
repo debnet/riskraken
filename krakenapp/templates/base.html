@@ -31,7 +31,11 @@
     <script src="{% static "js/jquery.min.js" %}" type="application/javascript"></script>
     <script src="{% static "js/bootstrap.bundle.min.js" %}" type="application/javascript"></script>
     <script src="{% static "js/fontawesome.min.js" %}" type="application/javascript"></script>
+    <script src="{% static "js/konami.js" %}" type="application/javascript"></script>
     {% endcompress %}
+    <script type="application/javascript">
+        new Konami(function() { new Audio('{% static "music/hell-march.mp3" %}').play(); });
+    </script>
     {% block footer %}{% endblock %}
 </body>
 </html>

@@ -14,7 +14,7 @@ class PlayerAdmin(UserAdmin):
     filter_horizontal = ('groups', 'user_permissions', )
     search_fields = UserAdmin.search_fields + ('full_name', )
     autocomplete_fields = ('capital', )
-    date_hierarchy = 'creation_date'
+    date_hierarchy = 'last_login'
 
     def get_form(self, request, obj=None, *args, **kwargs):
         from django.forms import TextInput
