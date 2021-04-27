@@ -171,7 +171,7 @@ class Command(BaseCommand):
                         territory.save(_reason=f"Amélioration automatique du {date:%x}")
             player.money += player.taxes
             player.reserve += player.prods
-            player.save(update_fields=('capital', 'money', 'reserve'), _reason=reason)
+            player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
             territory.troops = max(territory.troops + troops, territory.limit)
