@@ -81,7 +81,7 @@ class Command(BaseCommand):
                         action.target.troops = troops
                         action.target.save(update_fields=('troops', ), _reason=auto_reason)
                         action.defender.reserve -= troops
-                        action.defender.save(update_fields=('reserve', ), _reason=auto_reason)
+                        action.defender.save(update_fields=('reserve', ))
                 action.details.update(
                     auto=is_auto,
                     capital=is_capital,
@@ -128,9 +128,7 @@ class Command(BaseCommand):
                     action.target.player = action.player
                     if is_capital:
                         action.defender.capital = None
-                        action.defender.save(
-                            update_fields=('capital', ),
-                            _reason=f"Perte de la capitale lors de l'{reason.lower()}")
+                        action.defender.save(update_fields=('capital', ))
                     action.details.update(conquered=True)
                 field_length = min(len(attacker_rolls), len(defender_rolls))
                 action.details.update(
