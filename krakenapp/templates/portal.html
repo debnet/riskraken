@@ -282,8 +282,8 @@
                                 {% if action.done and action.type == 'A' %}
                                 <tr id="details{{ action.id }}" class="collapse">
                                     <td colspan="5">
-                                        {% if action.details.cancelled and action.details.reason %}
-                                            <span class="text-muted">{{ action.details.reason }}</span>
+                                        {% if action.details.cancelled or action.details.reason %}
+                                            <span class="text-muted">{{ action.details.reason|default:"Annulée pour des raisons inconnues." }}</span>
                                         {% else %}
                                         <table>
                                             <tr>
