@@ -1,7 +1,7 @@
 import datetime
 from dataclasses import dataclass, asdict
 import datetime as dt
-from random import randint
+from random import randint, seed
 from itertools import chain
 
 from django.core.management.base import BaseCommand
@@ -93,6 +93,7 @@ class Command(BaseCommand):
                     defender=dict(
                         troops=action.target.troops,
                         forts=action.target.forts))
+                seed(action.details.get('seed'))
                 attacker_rolls = sorted(
                     (Roll(roll=randint(1, 6), fort=False) for _ in range(attacker_troops)),
                     reverse=True)
@@ -100,6 +101,7 @@ class Command(BaseCommand):
                     (Roll(roll=randint(1, 6), fort=False) for _ in range(action.target.troops)),
                     (Roll(roll=randint(1, 6), fort=True) for _ in range(action.target.forts))),
                     reverse=True)
+                seed()
                 attacker_losses, defender_losses = 0, 0
                 for attacker_roll, defender_roll in zip(attacker_rolls, defender_rolls):
                     if attacker_roll.roll > defender_roll.roll:
@@ -151,7 +153,6 @@ class Command(BaseCommand):
 
     def update_players(self, date=None):
         date = date or datetime.date.today()
-        reason = f"Taxes et conscription du {date:%x}"
         players = Player.objects.with_rates()
         for player in players:
             if not player.count:
