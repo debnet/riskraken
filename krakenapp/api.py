@@ -15,7 +15,7 @@ class ClaimSerializer(CommonModelSerializer):
     power = serializers.IntegerField()
     points = serializers.IntegerField()
     claims = serializers.IntegerField()
-    player = create_model_serializer(Player, exclude=('password', 'groups', 'user_permissions', 'current_user', ))()
+    player = create_model_serializer(Player, exclude=('password', 'groups', 'user_permissions', ))()
 
 
 @auto_view(['GET'], serializer=ClaimSerializer, many=True)
