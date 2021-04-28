@@ -179,7 +179,7 @@ class Command(BaseCommand):
             territory.troops = min(territory.troops + troops, territory.limit)
             territory.extra.update(
                 days=territory.extra.get('days', 0) + 1,
-                money=territory.extra.get('money', 0) + max(territory.taxes, 1))
+                money=territory.extra.get('money', 0) + territory.taxes + 1)
             money = territory.extra['money']
             for code, func in reversed(COSTS.items()):
                 level = getattr(territory, code, 0)
