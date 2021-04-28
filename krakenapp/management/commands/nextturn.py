@@ -177,6 +177,9 @@ class Command(BaseCommand):
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
             territory.troops = min(territory.troops + troops, territory.limit)
+            if troops:
+                increase = territory.extra.setdefault('troops', [])
+                increase.append(dict(date=date, amount=troops, total=territory.troops))
             territory.extra.update(
                 days=territory.extra.get('days', 0) + 1,
                 money=territory.extra.get('money', 0) + territory.taxes + 1)
