@@ -260,7 +260,7 @@
                                         </span>
                                     </td>
                                     <td class="text-center align-middle">
-                                        {% if action.done and action.details %}
+                                        {% if action.done and action.details and action.type == 'A' %}
                                             <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse"
                                                     href="#details{{ action.id }}" role="button"
                                                     aria-expanded="false" aria-controls="details{{ action.id }}">
