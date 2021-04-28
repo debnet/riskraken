@@ -29,12 +29,12 @@ class Command(BaseCommand):
         for zone, name in ZONES:
             if zone in claimed:
                 continue
-            troops = randint(3, 10)
+            troops = randint(3, 8)
             territories.append(Territory(
                 zone=zone,
                 troops=troops,
-                taxes=randint(troops, 12) // 12,
-                prods=randint(troops, 12) // 12,
+                taxes=randint(troops, 10) // 10,
+                prods=randint(troops, 10) // 10,
                 limit=10))
         territories = sorted(territories, key=lambda t: t.zone)
         Territory.objects.bulk_create(territories)
