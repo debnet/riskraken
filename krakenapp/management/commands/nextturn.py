@@ -174,7 +174,7 @@ class Command(BaseCommand):
             player.reserve += player.prods or 0
             player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
-            troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
+            troops = randint(territory.troops, territory.limit) // (territory.limit - territory.prods)
             territory.troops = min(territory.troops + troops, territory.limit)
             if troops:
                 increase = territory.extra.setdefault('troops', [])
