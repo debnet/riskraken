@@ -72,13 +72,10 @@ class Command(BaseCommand):
                 is_auto = bool(action.defender and action.defender.auto)
                 is_capital = bool(action.defender and action.defender.capital == action.target)
                 if is_auto:
-                    troops = min(
-                        action.defender.reserve,
-                        action.target.troops,
-                        attacker_troops - action.target.troops)
+                    troops = min(action.defender.reserve, max(attacker_troops - action.target.troops, 0))
                     if troops:
                         auto_reason = f"Renforcement automatique à cause de l'attaque #{action.id} du {action.date:%x}"
-                        action.target.troops = troops
+                        action.target.troops += troops
                         action.target.save(update_fields=('troops', ), _reason=auto_reason)
                         action.defender.reserve -= troops
                         action.defender.save(update_fields=('reserve', ))
@@ -174,7 +171,7 @@ class Command(BaseCommand):
             player.reserve += player.prods or 0
             player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
-            troops = randint(territory.troops, territory.limit) // (territory.limit - territory.prods)
+            troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
             territory.troops = min(territory.troops + troops, territory.limit)
             if troops:
                 increase = territory.extra.setdefault('troops', [])
