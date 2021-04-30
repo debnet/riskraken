@@ -6,3 +6,7 @@ html, body {
 .asteriskField {
     color: red;
 }
+
+#div_id_image a {
+    color: black;
+}

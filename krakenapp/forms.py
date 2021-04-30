@@ -32,7 +32,7 @@ helper.form_method = 'post'
 helper.add_input(Submit('submit', "Se connecter"))
 AuthenticationForm.helper = helper
 
-UserEditForm = get_model_form(Player, fields=('full_name', 'color', 'ready', 'auto'), widgets={
+UserEditForm = get_model_form(Player, fields=('full_name', 'image', 'color', 'ready', 'auto'), widgets={
     'color': TextInput(attrs={'type': 'color', 'style': 'width: 5em'}),
 })
 helper = FormHelper()

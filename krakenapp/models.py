@@ -1,7 +1,10 @@
+import datetime
+import os
 from common.fields import JsonField
 from common.models import CommonModel, Entity, EntityQuerySet
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_image_file_extension
 from django.db import models
 from django.db.models import Case, Count, F, OuterRef, Subquery, Sum, Value, When
 from django.utils.timezone import now
@@ -20,6 +23,18 @@ class PlayerManager(UserManager):
         )
 
 
+def upload_to(instance, filename):
+    filename, ext = os.path.splitext(filename)
+    return os.path.join('images', f'{instance.id:03}.{int(datetime.datetime.now().timestamp())}{ext}')
+
+
+def validate_image_size(image):
+    limit = 150
+    file_size = image.file.size
+    if file_size > limit * 1024:
+        raise ValidationError("L'image ne doit pas faire plus de %s kB." % limit)
+
+
 class Player(AbstractUser):
     full_name = models.CharField(
         max_length=200, blank=True, verbose_name="nom",
@@ -27,6 +42,9 @@ class Player(AbstractUser):
     color = models.CharField(
         max_length=20, blank=True, verbose_name="couleur",
         help_text="Couleur qui sera utilisée pour représenter vos territoires et/ou revendications.")
+    image = models.ImageField(
+        blank=True, null=True, verbose_name="image", upload_to=upload_to,
+        validators=[validate_image_file_extension, validate_image_size])
     capital = models.OneToOneField(
         'Territory', on_delete=models.SET_NULL, blank=True, null=True, related_name='+', verbose_name="capitale")
     reserve = models.PositiveIntegerField(default=0, verbose_name="renforts")

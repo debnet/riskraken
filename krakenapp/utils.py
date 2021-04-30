@@ -46,6 +46,9 @@ def get_territories(player):
         territories.setdefault(territory.player, []).append(zone)
         zone['properties'].update(
             url='---',
+            image=(
+                f'<img src="{territory.player.image.url}" style="max-width: 100px; max-height: 50px;">'
+                if territory.player and territory.player.image else ''),
             troops=f'{territory.troops} / {territory.limit}',
             forts=territory.forts,
             taxes=territory.taxes,

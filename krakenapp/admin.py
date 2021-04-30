@@ -9,8 +9,8 @@ from krakenapp.models import Action, Claim, Player, Territory
 class PlayerAdmin(UserAdmin):
     list_display = ('id', 'full_name', 'capital', 'reserve', 'money', 'auto', 'ready', )
     list_display_links = ('id', 'full_name', )
-    fieldsets = UserAdmin.fieldsets + (
-        ("Risk", {'fields': ('full_name', 'color', 'capital', 'reserve', 'money', 'auto', 'ready', 'extra', )}), )
+    fieldsets = UserAdmin.fieldsets + (("Risk", {
+        'fields': ('full_name', 'color', 'image', 'capital', 'reserve', 'money', 'auto', 'ready', 'extra', )}), )
     filter_horizontal = ('groups', 'user_permissions', )
     search_fields = UserAdmin.search_fields + ('full_name', )
     autocomplete_fields = ('capital', )

@@ -13,19 +13,16 @@ html, body {
     top: 0.0%;
 }
 
-.foliumpopup {
-    margin: auto;
-}
-
-.foliumpopup table {
-    margin: auto;
-}
-
-.foliumpopup tr {
-    text-align: left;
-}
-
 .foliumpopup th {
-    padding: 2px;
-    padding-right: 8px;
+    padding: 2px 15px 2px 2px;
+    text-align: right;
+}
+
+.foliumpopup tr:nth-child(1) img {
+    margin-bottom: 5px;
+}
+
+.leaflet-popup-content {
+    max-width: 250px;
+    margin: 10px !important;
 }

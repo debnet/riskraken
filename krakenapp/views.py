@@ -37,6 +37,7 @@ def portal(request):
     ).order_by('-date', '-type')
     form = UserEditForm(instance=player)
     if request.method == 'POST':
+        allow_redirect = True
         if 'improve' in request.POST:
             try:
                 update, territory = request.POST.get('improve').split('_')
@@ -93,11 +94,14 @@ def portal(request):
             else:
                 messages.warning(request, "Le territoire sélectionné ne peut être défini comme votre capitale.")
         else:
-            form = UserEditForm(request.POST, instance=player)
-            if form.is_valid():
+            form = UserEditForm(request.POST, request.FILES, instance=player)
+            if not form.is_valid():
+                allow_redirect = False
+            else:
                 form.save()
-            messages.success(request, "Vos informations ont été modifiées avec succès !")
-        return redirect('front:portal')
+                messages.success(request, "Vos informations ont été modifiées avec succès !")
+        if allow_redirect:
+            return redirect('front:portal')
     last_claim = Claim.objects.aggregate(date=Max('modification_date'))['date'] or 0
     return {
         'player': player,
@@ -151,14 +155,19 @@ def map_forces(request):
             "weight": 1.00,
             "opacity": 0.25}
         popup = folium.GeoJsonPopup(
-            fields=("name", "province", "region", "owner", "troops", "forts", "taxes", "prods", "url"),
-            aliases=("Nom", "Province", "Région", "Propriétaire", "Troupes", "Forts", "Taxes", "Casernes", "Action"))
+            fields=("image", "name", "province", "region", "owner", "troops", "forts", "taxes", "prods", "url"),
+            aliases=("", "Nom", "Province", "Région", "Propriétaire", "Troupes", "Forts", "Taxes", "Casernes", "Action"))
+        tooltip = escape(str(player)) if player else None
+        if player and player.image:
+            tooltip = (
+                f'<img src="{player.image.url}" style="max-width: 50px; max-height: 25px; '
+                f'margin-right: 5px;"><span class="align-middle">{tooltip}</span>')
         folium.GeoJson(
             zones,
-            tooltip=escape(str(player)) if player else None,
+            tooltip=tooltip,
             style_function=style,
             popup=popup,
-            name=escape(str(player or "Indépendants")),
+            name=escape(str(player)) if player else "Indépendant",
             show='stats' not in request.GET,
         ).add_to(maps)
     folium.LayerControl().add_to(maps)
