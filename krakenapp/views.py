@@ -28,7 +28,7 @@ MAPS_CONFIG = dict(
 def portal(request):
     player_id = request.user.id
     if request.user.is_superuser and 'user' in request.GET:
-        player_id = request.GET['user']
+        player_id = request.GET['user'] or player_id
     player = Player.objects.with_rates().get(id=player_id)
     claims = player.claims.with_count().order_by('reason')
     territories = player.territories.order_by('zone')
