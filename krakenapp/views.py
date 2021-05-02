@@ -119,7 +119,7 @@ def portal(request):
 def map_claims(request):
     claims, world = get_claims()
     maps = folium.Map(**MAPS_CONFIG)
-    for player, zones in claims.items():
+    for player, zones in sorted(claims.items(), key=lambda e: str(e[0])):
         style = lambda x, player=player: {
             "fillColor": (player.color or "white") if player else "transparent",
             "color": (player.color or "lightgrey") if player else "white",
@@ -148,7 +148,7 @@ def map_claims(request):
 def map_forces(request):
     territories, world = get_territories(request.user)
     maps = folium.Map(**MAPS_CONFIG)
-    for player, zones in territories.items():
+    for player, zones in sorted(territories.items(), key=lambda e: str(e[0])):
         style = lambda x, player=player: {
             "fillColor": (player.color or "white") if player else "transparent",
             "color":  (player.color or "lightgrey") if player else "white",
