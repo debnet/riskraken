@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(choices=[('M', 'manœuvre'), ('A', 'attaque')], max_length=1, verbose_name='type')),
                 ('amount', models.PositiveSmallIntegerField(default=1, help_text="Indiquez la quantité de troupes qui sera impliquée.<br>Pour prendre le contrôle d'une province, il faut au moins une unité excédentaire survivante pour occuper la province.<br><strong>Attention !</strong> Si vos troupes sont réduites par une attaque, la réserve sera utilisée pour compenser les pertes.", verbose_name='quantité')),
                 ('details', common.fields.JsonField(blank=True, decoder=common.utils.JsonDecoder, default=dict, encoder=common.utils.JsonEncoder, verbose_name='détails')),
-                ('creation_date', models.DateTimeField(auto_now=True, verbose_name='date de planification')),
+                ('creation_date', models.DateTimeField(auto_now_add=True, verbose_name='date de planification')),
                 ('done', models.BooleanField(default=False, verbose_name='traité')),
                 ('defender', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='attacks', to=settings.AUTH_USER_MODEL, verbose_name='défenseur')),
                 ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='actions', to=settings.AUTH_USER_MODEL, verbose_name='utilisateur')),

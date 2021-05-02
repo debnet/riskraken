@@ -172,7 +172,7 @@ class Action(CommonModel):
     defender = models.ForeignKey(
         'Player', blank=True, null=True, on_delete=models.SET_NULL, related_name='attacks', verbose_name="défenseur")
     details = JsonField(blank=True, default=dict, verbose_name="détails")
-    creation_date = models.DateTimeField(auto_now=True, verbose_name="date de planification")
+    creation_date = models.DateTimeField(auto_now_add=True, verbose_name="date de planification")
     done = models.BooleanField(default=False, verbose_name="traité")
 
     def __str__(self):
