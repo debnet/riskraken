@@ -27,8 +27,8 @@ MAPS_CONFIG = dict(
 @render_to('portal.html')
 def portal(request):
     player_id = request.user.id
-    if request.user.is_superuser and 'user' in request.GET:
-        player_id = request.GET['user'] or player_id
+    if request.user.is_superuser and 'player' in request.GET:
+        player_id = request.GET['player'] or player_id
     player = Player.objects.with_rates().get(id=player_id)
     claims = player.claims.with_count().order_by('reason')
     territories = player.territories.order_by('zone')
@@ -176,36 +176,70 @@ def map_forces(request):
     return {'maps': maps}
 
 
+def get_choropleth(player, zones, data, **kwargs):
+    choropleth = folium.Choropleth(
+        geo_data=zones,
+        data=data,
+        key_on='properties.code',
+        name=escape(str(player)) if player else "Indépendant",
+        **kwargs)
+    tooltip = escape(str(player)) if player else None
+    if player and player.image:
+        tooltip = (
+            f'<img src="{player.image.url}" style="max-width: 50px; max-height: 25px; '
+            f'margin-right: 5px;"><span class="align-middle">{tooltip}</span>')
+    if tooltip:
+        tooltip = folium.features.Tooltip(tooltip)
+        tooltip.add_to(choropleth.geojson)
+    for key in list(choropleth._children.keys()):
+        if key.startswith('color_map'):
+            del choropleth._children[key]
+    return choropleth
+
+
 @cache_page(3600)
 @login_required
 @render_to('map.html')
 def map_stats(request, type):
-    world, zones = get_zones()
     maps = folium.Map(**MAPS_CONFIG)
     if type == 'claims':
-        folium.Choropleth(
-            geo_data=world,
-            data=dict(Claim.objects.values_list('zone').order_by('zone').annotate(count=Count('id'))),
-            key_on='properties.code',
-            color='white',
-            fill_color='YlOrRd',
-            fill_opacity=0.50,
-            line_opacity=1.00,
-            nan_fill_opacity=0.00,
-            nan_fill_color='grey',
-        ).add_to(maps)
+        data = dict(Claim.objects.values_list('zone').order_by('zone').annotate(count=Count('id')))
+        claims, world = get_claims()
+        for player, zones in sorted(claims.items(), key=lambda e: str(e[0])):
+            extra = dict(line_color='#ffffff', line_weight=2) if player == request.user else {}
+            choropleth = get_choropleth(
+                player, zones, data,
+                color='white',
+                fill_color='YlOrRd',
+                fill_opacity=0.50,
+                line_opacity=1.00,
+                nan_fill_opacity=0.00,
+                nan_fill_color='grey',
+                **extra)
+            popup = folium.GeoJsonPopup(
+                fields=("name", "province", "region", "claims", "url"),
+                aliases=("Nom", "Province", "Région", "Prétendants", "Action"))
+            popup.add_to(choropleth.geojson)
+            choropleth.add_to(maps)
     elif type in ('troops', 'forts', 'taxes', 'prods'):
-        folium.Choropleth(
-            geo_data=world,
-            data=dict(Territory.objects.values_list('zone', type)),
-            key_on='properties.code',
-            color='white',
-            fill_color='RdYlGn',
-            fill_opacity=0.50,
-            line_opacity=1.00,
-            nan_fill_opacity=0.00,
-            nan_fill_color='grey',
-        ).add_to(maps)
+        data = dict(Territory.objects.values_list('zone', type))
+        territories, world = get_territories(request.user)
+        for player, zones in sorted(territories.items(), key=lambda e: str(e[0])):
+            extra = dict(line_color='#ffffff', line_weight=2) if player == request.user else {}
+            choropleth = get_choropleth(
+                player, zones, data,
+                fill_color='RdYlGn',
+                fill_opacity=0.50,
+                line_opacity=1.00,
+                nan_fill_opacity=0.00,
+                nan_fill_color='grey',
+                **extra)
+            popup = folium.GeoJsonPopup(
+                fields=("image", "name", "province", "region", "owner", "troops", "forts", "taxes", "prods", "url"),
+                aliases=("", "Nom", "Province", "Région", "Propriétaire", "Troupes", "Forts", "Taxes", "Casernes", "Action"))
+            popup.add_to(choropleth.geojson)
+            choropleth.add_to(maps)
+    folium.LayerControl().add_to(maps)
     maps = maps.get_root()
     maps.render()
     return {'maps': maps}

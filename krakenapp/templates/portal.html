@@ -170,26 +170,27 @@
             </div>
             <div id="actions-body" class="card-body collapse show">
                 <div class="">
-                    <a href="{% url "front:map_forces" %}?user={{ request.user.id }}" class="btn btn-primary">
+                    <a href="{% url "front:map_forces" %}?player={{ request.user.id }}"
+                       class="btn btn-primary">
                         <i class="fa fa-route"></i>
                         <span>Planifier sur la carte</span>
                     </a>
-                    <a href="{% url "front:map_stats" "troops" %}" target="_blank"
+                    <a href="{% url "front:map_stats" "troops" %}?player={{ request.user.id }}"
                        class="btn btn-danger d-none d-sm-inline"
                        title="Carte des troupes" data-toggle="tooltip">
                         <i class="fa fa-users"></i>
                     </a>
-                    <a href="{% url "front:map_stats" "taxes" %}" target="_blank"
+                    <a href="{% url "front:map_stats" "taxes" %}?player={{ request.user.id }}"
                        class="btn btn-warning d-none d-sm-inline"
                        title="Carte des taxes" data-toggle="tooltip">
                         <i class="fa fa-coins"></i>
                     </a>
-                    <a href="{% url "front:map_stats" "forts" %}" target="_blank"
+                    <a href="{% url "front:map_stats" "forts" %}?player={{ request.user.id }}"
                        class="btn btn-success d-none d-sm-inline"
                        title="Carte des forts" data-toggle="tooltip">
                         <i class="fab fa-fort-awesome"></i>
                     </a>
-                    <a href="{% url "front:map_stats" "prods" %}" target="_blank"
+                    <a href="{% url "front:map_stats" "prods" %}?player={{ request.user.id }}"
                        class="btn btn-info d-none d-sm-inline"
                        title="Carte des casernes" data-toggle="tooltip">
                         <i class="fa fa-house-user"></i>
@@ -364,7 +365,7 @@
                         <i class="fa fa-globe-europe"></i>
                         <span>Revendiquer sur la carte</span>
                     </a>
-                    <a href="{% url "front:map_stats" "claims" %}" target="_blank" class="btn btn-secondary"
+                    <a href="{% url "front:map_stats" "claims" %}" class="btn btn-secondary"
                        title="Carte des revendications" data-toggle="tooltip">
                         <i class="fa fa-flag"></i>
                     </a>

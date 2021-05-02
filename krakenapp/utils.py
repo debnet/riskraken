@@ -41,7 +41,8 @@ def get_claims():
 def get_territories(player):
     world, zones = get_zones()
     territories, owned = {}, set()
-    for territory in Territory.objects.select_related('player'):
+    queryset = Territory.objects.select_related('player')
+    for territory in queryset:
         zone = zones[territory.zone]
         territories.setdefault(territory.player, []).append(zone)
         zone['properties'].update(
