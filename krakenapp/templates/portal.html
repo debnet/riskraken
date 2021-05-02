@@ -200,10 +200,10 @@
                 {% regroup actions by date as action_groups %}
                     <form method="post" action="{{ request.get_full_path }}">
                     {% csrf_token %}
-                    <table class="table table-bordered table-striped mt-3">
+                    <table class="table table-bordered mt-3">
                         <tbody>
                             {% for date, actions in action_groups %}
-                                <tr>
+                                <tr class="thead-dark">
                                     <th colspan="5" class="text-center">
                                         {{ date }}
                                     </th>
