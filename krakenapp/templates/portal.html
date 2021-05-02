@@ -287,6 +287,10 @@
                                                     title="Supprimer" data-toggle="tooltip">
                                                 <i class="fa fa-trash-alt"></i>
                                             </button>
+                                        {% elif action.details.cancelled %}
+                                            <span class="text-warning" title="{{ action.details.reason }}" data-toggle="tooltip">
+                                                <i class="fa fa-times"></i>
+                                            </span>
                                         {% else %}
                                             <span class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
                                                 <i class="fa fa-check"></i>
