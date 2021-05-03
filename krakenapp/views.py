@@ -5,15 +5,17 @@ from common.utils import render_to
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.core.validators import MaxValueValidator
 from django.db.models import Count, Max, Q
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.html import escape
+from django.utils.timezone import now
 from django.views.decorators.cache import cache_page, never_cache
 
 from krakenapp.enums import COSTS, NEIGHBOURS, ZONES
-from krakenapp.forms import ActionForm, ClaimForm, UserEditForm, UserRegisterForm
-from krakenapp.models import Action, Claim, Player, Territory
-from krakenapp.utils import get_claims, get_territories, get_zones
+from krakenapp.forms import ActionForm, ClaimForm, ExchangeForm, UserEditForm, UserRegisterForm
+from krakenapp.models import Action, Claim, Exchange, Player, Territory
+from krakenapp.utils import get_claims, get_territories
 
 MAPS_CONFIG = dict(
     location=(47, 3), zoom_start=6, min_zoom=6,
@@ -33,56 +35,100 @@ def portal(request):
     claims = player.claims.with_count().order_by('reason')
     territories = player.territories.order_by('zone')
     actions = Action.objects.select_related('player', 'source', 'target', 'defender').filter(
-        Q(player=player) | Q(defender=player, done=True), date__gte=datetime.date.today() - datetime.timedelta(days=5)
+        Q(player=player) | Q(defender=player, done=True), date__gt=datetime.date.today() - datetime.timedelta(days=5)
     ).order_by('-date', '-type')
+    exchanges = Exchange.objects.select_related('sender', 'receiver').filter(
+        Q(sender=player) | Q(receiver=player), creation_date__gt=now() - datetime.timedelta(days=5)
+    ).order_by('-creation_date')
     form = UserEditForm(instance=player)
     if request.method == 'POST':
         allow_redirect = True
-        if 'improve' in request.POST:
-            try:
-                update, territory = request.POST.get('improve').split('_')
-                territory = territories.filter(id=territory).first()
-                if not territory:
-                    raise AssertionError("ce territoire ne vous appartient pas")
-                level = getattr(territory, update, 0)
-                cost = COSTS.get(update)(level)
-                if player.money < cost:
-                    raise AssertionError("vous n'avez pas assez d'argent pour les travaux")
-                setattr(territory, update, level + 1)
-                upgrades = territory.extra.setdefault('upgrades', [])
-                upgrades.append(dict(date=datetime.date.today(), type=update, cost=cost, level=level + 1))
-                territory.save(update_fields=(update, 'extra', ))
-                player.money -= cost
-                player.save(update_fields=('money', ))
-                messages.success(request, "Votre territoire a été amélioré avec succès !")
-            except AssertionError as e:
-                messages.warning(request, f"Impossible d'améliorer cette province car {e} !")
-            except:
-                pass
-        elif 'troops' in request.POST:
-            try:
-                reserve = player.reserve
-                for territory in territories:
-                    value = int(request.POST[territory.zone])
-                    if value < territory.troops:
-                        raise AssertionError("vous ne pouvez pas retirer des troops déjà présentes")
-                    if value > territory.limit:
-                        raise AssertionError("vous ne pouvez pas dépasser la limite")
-                    reserve -= (value - territory.troops)
-                    territory.troops = value
-                if 0 > reserve > player.reserve:
-                    raise AssertionError("vous n'avez pas assez de troops en réserve")
-                Territory.objects.bulk_update(territories, fields=('troops', ))
-                player.reserve = reserve
-                player.save(update_fields=('reserve', ))
-                messages.success(request, "Vos territoires ont été renforcés avec succès !")
-            except AssertionError as e:
-                messages.warning(request, f"Vos territoires n'ont pas pu être renforcés car {e} !")
-            except:
-                pass
-        elif 'delete' in request.POST:
-            Action.objects.filter(player=player, id=request.POST['delete']).delete()
-            messages.success(request, "Votre action planifiée a été supprimée avec succès !")
+        form_type = request.POST['type'] if 'type' in request.POST else ''
+        if form_type == 'territory':
+            if 'improve' in request.POST:
+                try:
+                    update, territory = request.POST.get('improve').split('_')
+                    territory = territories.filter(id=territory).first()
+                    if not territory:
+                        raise AssertionError("ce territoire ne vous appartient pas")
+                    level = getattr(territory, update, 0)
+                    cost = COSTS.get(update)(level)
+                    if player.money < cost:
+                        raise AssertionError("vous n'avez pas assez d'argent pour les travaux")
+                    setattr(territory, update, level + 1)
+                    upgrades = territory.extra.setdefault('upgrades', [])
+                    upgrades.append(dict(date=datetime.date.today(), type=update, cost=cost, level=level + 1))
+                    territory.save(update_fields=(update, 'extra', ))
+                    player.money -= cost
+                    player.save(update_fields=('money', ))
+                    messages.success(request, "Votre territoire a été amélioré avec succès !")
+                except AssertionError as e:
+                    messages.warning(request, f"Impossible d'améliorer cette province car {e} !")
+                except:
+                    pass
+            elif 'troops' in request.POST:
+                try:
+                    reserve = player.reserve
+                    for territory in territories:
+                        value = int(request.POST[territory.zone])
+                        if value < territory.troops:
+                            raise AssertionError("vous ne pouvez pas retirer des troops déjà présentes")
+                        if value > territory.limit:
+                            raise AssertionError("vous ne pouvez pas dépasser la limite")
+                        reserve -= (value - territory.troops)
+                        territory.troops = value
+                    if 0 > reserve > player.reserve:
+                        raise AssertionError("vous n'avez pas assez de troops en réserve")
+                    Territory.objects.bulk_update(territories, fields=('troops', ))
+                    player.reserve = reserve
+                    player.save(update_fields=('reserve', ))
+                    messages.success(request, "Vos territoires ont été renforcés avec succès !")
+                except AssertionError as e:
+                    messages.warning(request, f"Vos territoires n'ont pas pu être renforcés car {e} !")
+                except:
+                    pass
+        elif form_type == 'action':
+            if 'delete' in request.POST:
+                Action.objects.filter(player=player, id=request.POST['delete']).delete()
+                messages.success(request, "Votre action planifiée a été supprimée avec succès !")
+        elif form_type == 'exchange':
+            if 'delete' in request.POST:
+                exchange = Exchange.objects.filter(
+                    sender=player, accepted=None, id=request.POST['delete']).first()
+                if exchange:
+                    player.money += exchange.sender_money
+                    player.reserve += exchange.sender_troops
+                    player.save(update_fields=('money', 'reserve', ))
+                    exchange.delete()
+                    messages.success(request, "Votre échange a été supprimé avec succès et "
+                                              "les ressources mobilisées ont été remboursées !")
+            elif 'accept' in request.POST:
+                exchange = Exchange.objects.filter(receiver=player, id=request.POST['accept']).first()
+                if exchange:
+                    if exchange.receiver_money > player.money:
+                        messages.warning(request, "Vous ne pouvez pas accepter cet échange car vous ne "
+                                                  "disposez pas d'assez d'argent pour honorer l'accord.")
+                    elif exchange.receiver_troops > player.reserve:
+                        messages.warning(request, "Vous ne pouvez pas accepter cet échange car vous ne "
+                                                  "disposez pas d'assez de troupes pour honorer l'accord.")
+                    else:
+                        player.money -= exchange.receiver_money
+                        player.reserve -= exchange.receiver_troops
+                        player.save(update_fields=('money', 'reserve', ))
+                        exchange.accepted = True
+                        exchange.save(update_fields=('accepted', ))
+                        messages.success(request, "L'accord a été accepté avec succès et les ressources demandées "
+                                                  "ont été mobilisées ! L'échange aura lieu dès que possible.")
+            elif 'reject' in request.POST:
+                exchange = Exchange.objects.select_related('sender').filter(
+                    receiver=player, id=request.POST['reject']).first()
+                if exchange:
+                    exchange.sender.money += exchange.sender_money
+                    exchange.sender.reserve += exchange.sender_troops
+                    exchange.sender.save(update_fields=('money', 'reserve', ))
+                    exchange.accepted = False
+                    exchange.save(update_fields=('accepted', ))
+                    messages.success(request, "L'accord a été rejeté avec succès, l'expéditeur a été remboursé.")
         elif 'capital' in request.POST:
             territory = Territory.objects.filter(
                 player=player, player__capital__isnull=True, id=request.POST['capital']
@@ -108,6 +154,7 @@ def portal(request):
         'claims': claims,
         'territories': territories,
         'actions': actions,
+        'exchanges': exchanges,
         'form': form,
         'last_claim': last_claim,
     }
@@ -253,7 +300,6 @@ def claim(request, zone):
     if zone not in zones:
         messages.warning(request, "Cette province n'existe pas !")
         return redirect('front:portal')
-        # raise Http404("Cette province n'existe pas !")
     claim = Claim.objects.filter(player=request.user, zone=zone).first()
     if request.method == 'POST':
         form = ClaimForm(request.POST, instance=claim)
@@ -288,7 +334,6 @@ def action(request, zone):
     if not neighbours:
         messages.warning(request, "Aucune province voisine n'est disponible pour cette action !")
         return redirect('front:portal')
-        # raise Http404("Aucune province voisine n'est disponible pour cette action !")
     initial = {'date': datetime.date.today(), 'player': request.user, 'target': territory, 'type': action_type}
     if request.method == 'POST':
         form = ActionForm(request.POST)
@@ -303,6 +348,45 @@ def action(request, zone):
         form.fields['source'].queryset = neighbours
         form.fields['source'].empty_label = None
     return {'form': form, 'target': territory, 'action': action_type}
+
+
+@never_cache
+@login_required
+@render_to('exchange.html')
+def exchange(request):
+    player = request.user
+    neighbours = set(sum([NEIGHBOURS[t.zone] for t in Territory.objects.filter(player=player).only('zone')], []))
+    players = Territory.objects.filter(zone__in=neighbours, player__isnull=False).values('player_id').distinct()
+    players = Player.objects.exclude(id=player.id).filter(id__in=players).order_by('full_name')
+
+    def add_form_validation(form):
+        # players = Player.objects.with_rates().exclude(id=request.user.id).filter(count__gt=0).order_by('full_name')
+        form.fields['receiver'].queryset = players
+        field = form.fields['sender_money']
+        field.max_value = player.money
+        field.widget.attrs['max'] = field.max_value
+        field.validators = [MaxValueValidator(field.max_value)]
+        field = form.fields['sender_troops']
+        field.max_value = player.reserve
+        field.widget.attrs['max'] = field.max_value
+        field.validators = [MaxValueValidator(field.max_value)]
+
+    initial = {'sender': request.user}
+    if request.method == 'POST':
+        form = ExchangeForm(request.POST, initial=initial)
+        add_form_validation(form)
+        if form.is_valid():
+            instance = form.save()
+            player.money -= instance.sender_money
+            player.reserve -= instance.sender_troops
+            player.save()
+            messages.success(request, "Votre demande d'échange a été enregistrée avec succès et les ressources "
+                                      "expédiées ont été mobilisées jusqu'à acceptation ou refus par le destinataire !")
+            return redirect('front:portal')
+    else:
+        form = ExchangeForm(initial=initial)
+        add_form_validation(form)
+    return {'form': form}
 
 
 @render_to('register.html')

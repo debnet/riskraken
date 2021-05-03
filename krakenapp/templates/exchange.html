@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block main %}
+    <div class="d-flex justify-content-center">
+        <div class="card shadow rounded my-auto">
+            <div class="card-header text-center">
+                <h3 class="font-weight-bold">Échange</h3>
+            </div>
+            <div class="card-body">
+                {% crispy form %}
+                <a href="{% url "front:portal" %}">Retour</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

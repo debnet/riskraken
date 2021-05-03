@@ -1,10 +1,10 @@
 from common.forms import get_model_form
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Hidden, Submit
+from crispy_forms.layout import Fieldset, Hidden, Layout, Submit
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.forms import TextInput, HiddenInput
 
-from krakenapp.models import Action, Claim, Player
+from krakenapp.models import Action, Claim, Exchange, Player
 
 
 class UserRegisterForm(UserCreationForm):
@@ -55,3 +55,16 @@ helper = FormHelper()
 helper.form_method = 'post'
 helper.add_input(Submit('submit', "Valider"))
 ActionForm.helper = helper
+
+ExchangeForm = get_model_form(Exchange, exclude=('accepted', 'done'), widgets={
+    'sender': HiddenInput(),
+})
+helper = FormHelper()
+helper.layout = Layout(
+    'sender',
+    'receiver',
+    Fieldset("Ressources envoyées", 'sender_money', 'sender_troops'),
+    Fieldset("Ressources reçues", 'receiver_money', 'receiver_troops'))
+helper.form_method = 'post'
+helper.add_input(Submit('submit', "Valider"))
+ExchangeForm.helper = helper

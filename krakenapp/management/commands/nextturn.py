@@ -9,7 +9,7 @@ from django.db.models import F
 from django.db.transaction import atomic
 
 from krakenapp.enums import COSTS
-from krakenapp.models import Action, Player, Territory
+from krakenapp.models import Action, Exchange, Player, Territory
 
 
 @dataclass
@@ -145,6 +145,16 @@ class Command(BaseCommand):
                 action.details.update(troops=max_troops)
             action.done = True
             action.save()
+        for exchange in Exchange.objects.select_related('sender', 'receiver').filter(done=False, accepted=True):
+            exchange.sender.money += exchange.receiver_money
+            exchange.sender.reserve += exchange.receiver_troops
+            exchange.sender.save(update_fields=('money', 'reserve', ))
+            exchange.receiver.money += exchange.sender_money
+            exchange.receiver.reserve += exchange.sender_troops
+            exchange.receiver.save(update_fields=('money', 'reserve', ))
+            exchange.done = True
+            exchange.save(update_fields=('done', ))
+
 
     def update_players(self, date=None):
         date = date or datetime.date.today()

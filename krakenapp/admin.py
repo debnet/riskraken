@@ -2,7 +2,7 @@ from common.admin import create_admin, CommonAdmin, EntityAdmin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from krakenapp.models import Action, Claim, Player, Territory
+from krakenapp.models import Action, Claim, Exchange, Player, Territory
 
 
 @admin.register(Player)
@@ -14,6 +14,7 @@ class PlayerAdmin(UserAdmin):
     filter_horizontal = ('groups', 'user_permissions', )
     search_fields = UserAdmin.search_fields + ('full_name', )
     autocomplete_fields = ('capital', )
+    ordering = ('full_name', )
     date_hierarchy = 'last_login'
 
     def get_form(self, request, obj=None, *args, **kwargs):
@@ -49,6 +50,10 @@ class ActionAdmin(CommonAdmin):
     pass
 
 
+class ExchangeAdmin(CommonAdmin):
+    pass
+
+
 create_admin(
     Claim, baseclass=ClaimAdmin,
     list_filter=('creation_date', 'modification_date', 'player', ))
@@ -60,3 +65,4 @@ create_admin(
     Action, baseclass=ActionAdmin,
     list_filter=('date', 'creation_date', 'type', 'done', 'player', 'defender', ),
     autocomplete_fields=('player', 'defender', 'source', 'target', ))
+create_admin(Exchange, baseclass=ExchangeAdmin)

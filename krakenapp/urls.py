@@ -13,6 +13,7 @@ urlpatterns = [
     path('attack/<str:zone>/', views.action, name='attack'),
     path('claim/<str:zone>/', views.claim, name='claim'),
     path('move/<str:zone>/', views.action, name='move'),
+    path('exchange/', views.exchange, name='exchange'),
     path('register/', views.register, name='register'),
     path('info/', views.info, name='info'),
 ]

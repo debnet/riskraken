@@ -68,6 +68,7 @@ class Player(AbstractUser):
     class Meta(AbstractUser.Meta):
         verbose_name = "joueur"
         verbose_name_plural = "joueurs"
+        ordering = ('full_name', )
 
 
 class ClaimQuerySet(EntityQuerySet):
@@ -200,3 +201,25 @@ class Action(CommonModel):
         verbose_name_plural = "actions"
         unique_together = ('date', 'player', 'source')
         ordering = ('-date', 'player')
+
+
+class Exchange(CommonModel):
+    sender = models.ForeignKey(
+        'Player', on_delete=models.CASCADE, related_name='sent', verbose_name="expéditeur")
+    sender_money = models.PositiveSmallIntegerField(default=0, verbose_name="argent envoyé")
+    sender_troops = models.PositiveSmallIntegerField(default=0, verbose_name="troupes envoyées")
+    receiver = models.ForeignKey(
+        'Player', on_delete=models.CASCADE, related_name='received', verbose_name="destinataire",
+        help_text="Le destinataire ne peut être qu'un joueur avec qui vous avez des frontières communes.")
+    receiver_money = models.PositiveSmallIntegerField(default=0, verbose_name="argent reçu")
+    receiver_troops = models.PositiveSmallIntegerField(default=0, verbose_name="troupes reçues")
+    creation_date = models.DateTimeField(auto_now_add=True, verbose_name="date de proposition")
+    accepted = models.BooleanField(null=True, verbose_name="accepté")
+    done = models.BooleanField(default=False, verbose_name="traité")
+
+    def __str__(self):
+        return f'[{self.creation_date.date()}] {self.sender} - {self.receiver}'
+
+    class Meta:
+        verbose_name = "échange"
+        verbose_name_plural = "échanges"

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='player',
-            options={'verbose_name': 'joueur', 'verbose_name_plural': 'joueurs'},
+            options={'ordering': ('full_name',), 'verbose_name': 'joueur', 'verbose_name_plural': 'joueurs'},
         ),
         migrations.RemoveField(
             model_name='territory',

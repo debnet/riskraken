@@ -6,12 +6,12 @@
         <div id="infos" class="card rounded shadow">
             <div class="card-header text-center">
                 <a href="#" class="text-decoration-none" data-toggle="collapse" data-target="#infos-body"
-                   aria-expanded="false" aria-controls="infos-body">
+                   aria-expanded="{% if territories %}false{% else %}true{% endif %}" aria-controls="infos-body">
                     <i class="fa fa-user-tie"></i>
                     <span>Informations</span>
                 </a>
             </div>
-            <div id="infos-body" class="card-body collapse">
+            <div id="infos-body" class="card-body collapse {% if not territories %}show{% endif %}">
                 {% crispy form %}
             </div>
         </div>
@@ -83,6 +83,9 @@
                     </div>
                 </div>
                 <form method="post" action="{{ request.get_full_path }}">
+                    <input type="hidden" name="type" value="actions">
+                    <input type="hidden" id="reserve" name="reserve" value="{{ player.reserve }}">
+                    {% csrf_token %}
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -144,7 +147,7 @@
                                                name="{{ territory.zone }}" value="{{ territory.troops }}"
                                                min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}"
                                                max="{{ territory.limit }}" aria-valuemax="{{ territory.limit }}">
-                                        <div class="d-none d-sm-inline">
+                                        <div class="d-none d-sm-inline align-top">
                                             <strong class="ml-1">/</strong>
                                             {% check_update territory.id "Limite" 'limit' territory.limit player.money %}
                                         </div>
@@ -154,8 +157,6 @@
                         </tbody>
                     </table>
                     <input type="submit" name="troops" value="Renforcer" class="btn btn-primary float-right">
-                    <input type="hidden" id="reserve" name="reserve" value="{{ player.reserve }}">
-                    {% csrf_token %}
                 </form>
             </div>
         </div>
@@ -199,171 +200,300 @@
                 {% if actions %}
                 {% regroup actions by date as action_groups %}
                     <form method="post" action="{{ request.get_full_path }}">
-                    {% csrf_token %}
-                    <table class="table table-bordered mt-3">
-                        <tbody>
-                            {% for date, actions in action_groups %}
-                                <tr class="thead-dark">
-                                    <th colspan="5" class="text-center">
-                                        {{ date }}
-                                    </th>
-                                </tr>
-                                {% for action in actions %}
-                                <tr>
-                                    <th class="text-center align-middle">
-                                        {% if action.type == 'A' %}
-                                            {% if action.player == player %}
-                                                <span class="text-success">
-                                                {% if action.details.conquered %}
-                                                    Conquête
+                        <input type="hidden" name="type" value="action">
+                        {% csrf_token %}
+                        <table class="table table-bordered mt-3">
+                            <tbody>
+                                {% for date, actions in action_groups %}
+                                    <tr class="thead-dark">
+                                        <th colspan="5" class="text-center">
+                                            {{ date }}
+                                        </th>
+                                    </tr>
+                                    {% for action in actions %}
+                                    <tr>
+                                        <th class="text-center align-middle">
+                                            {% if action.type == 'A' %}
+                                                {% if action.player == player %}
+                                                    <span class="text-success">
+                                                    {% if action.details.conquered %}
+                                                        Conquête
+                                                    {% else %}
+                                                        Attaque
+                                                    {% endif %}
+                                                    </span>
                                                 {% else %}
-                                                    Attaque
+                                                    <span class="text-danger">
+                                                    {% if action.details.conquered %}
+                                                        Conquête ennemie
+                                                    {% else %}
+                                                        Attaque ennemie
+                                                    {% endif %}
+                                                    </span>
                                                 {% endif %}
+                                            {% else %}
+                                                Manœuvre
+                                            {% endif %}
+                                            {% if action.details.cancelled %}
+                                                <span class="text-muted">annulée</span>
+                                            {% endif %}
+                                        </th>
+                                        {% if action.player == player %}
+                                        <td class="align-middle w-50 d-none d-sm-table-cell">
+                                            <span>{{ action.source }}</span>
+                                            <br />
+                                            <small class="text-muted">
+                                                {{ action.player }}
+                                            </small>
+                                        </td>
+                                        <td class="align-middle w-50">
+                                            <span>{{ action.target }}</span>
+                                            <br />
+                                            <small class="text-muted">
+                                                {{ action.defender|default_if_none:"---" }}
+                                            </small>
+                                        </td>
+                                        {% else %}
+                                        <td class="align-middle w-50 d-none d-sm-table-cell">
+                                            <span>{{ action.target }}</span>
+                                            <br />
+                                            <small class="text-muted">
+                                                {{ action.defender|default_if_none:"---" }}
+                                            </small>
+                                        </td>
+                                        <td class="align-middle w-50">
+                                            <span>{{ action.source }}</span>
+                                            <br />
+                                            <small class="text-muted">
+                                                {{ action.player }}
+                                            </small>
+                                        </td>
+                                        {% endif %}
+                                        <td class="text-center align-middle d-none d-sm-table-cell">
+                                            <span class="text-nowrap">
+                                                <span title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
+                                                    <strong>{{ action.amount }}</strong>
+                                                    <i class="fa fa-users"></i>
+                                                </span>
+                                                {% if action.done and action.type == 'A' %}
+                                                {% if action.player == player %}
+                                                    <br />
+                                                    <span class="text-{% if action.details.attacker.losses %}danger{% else %}success{% endif %}"
+                                                          title="Nombre de pertes" data-toggle="tooltip" data-placement="left">
+                                                        <strong>{{ action.details.attacker.losses }}</strong>
+                                                        <i class="fa fa-users"></i>
+                                                    </span>
+                                                {% else %}
+                                                    <br />
+                                                    <span class="text-{% if action.details.defender.losses %}danger{% else %}success{% endif %}"
+                                                          title="Nombre de pertes" data-toggle="tooltip" data-placement="left">
+                                                        <strong>{{ action.details.defender.losses }}</strong>
+                                                        <i class="fa fa-users"></i>
+                                                    </span>
+                                                {% endif %}
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            {% if action.done and action.details and action.type == 'A' %}
+                                                <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse"
+                                                        href="#details{{ action.id }}" role="button"
+                                                        aria-expanded="false" aria-controls="details{{ action.id }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            {% elif not action.done %}
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                        name="delete" value="{{ action.id }}"
+                                                        title="Supprimer" data-toggle="tooltip">
+                                                    <i class="fa fa-trash-alt"></i>
+                                                </button>
+                                            {% elif action.details.cancelled %}
+                                                <span class="text-warning" title="{{ action.details.reason }}" data-toggle="tooltip">
+                                                    <i class="fa fa-times"></i>
                                                 </span>
                                             {% else %}
-                                                <span class="text-danger">
-                                                {% if action.details.conquered %}
-                                                    Conquête ennemie
-                                                {% else %}
-                                                    Attaque ennemie
-                                                {% endif %}
+                                                <span class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
+                                                    <i class="fa fa-check"></i>
                                                 </span>
                                             {% endif %}
-                                        {% else %}
-                                            Manœuvre
-                                        {% endif %}
-                                        {% if action.details.cancelled %}
-                                            <span class="text-muted">annulée</span>
-                                        {% endif %}
-                                    </th>
-                                    {% if action.player == player %}
-                                    <td class="align-middle w-50 d-none d-sm-table-cell">
-                                        <span>{{ action.source }}</span>
-                                        <br />
-                                        <small class="text-muted">
-                                            {{ action.player }}
-                                        </small>
-                                    </td>
-                                    <td class="align-middle w-50">
-                                        <span>{{ action.target }}</span>
-                                        <br />
-                                        <small class="text-muted">
-                                            {{ action.defender|default_if_none:"---" }}
-                                        </small>
-                                    </td>
-                                    {% else %}
-                                    <td class="align-middle w-50 d-none d-sm-table-cell">
-                                        <span>{{ action.target }}</span>
-                                        <br />
-                                        <small class="text-muted">
-                                            {{ action.defender|default_if_none:"---" }}
-                                        </small>
-                                    </td>
-                                    <td class="align-middle w-50">
-                                        <span>{{ action.source }}</span>
-                                        <br />
-                                        <small class="text-muted">
-                                            {{ action.player }}
-                                        </small>
-                                    </td>
+                                        </td>
+                                    </tr>
+                                    {% if action.done and action.type == 'A' %}
+                                    <tr id="details{{ action.id }}" class="collapse">
+                                        <td colspan="5">
+                                            {% if action.details.cancelled or action.details.reason %}
+                                                <span class="text-muted">{{ action.details.reason|default:"Annulée pour des raisons inconnues." }}</span>
+                                            {% else %}
+                                            <table>
+                                                <tr>
+                                                    <th>Attaquant</th>
+                                                    {% for roll in action.details.attacker_rolls %}
+                                                        <td class="{% if roll.wins %}text-success{% else %}text-danger{% endif %}">
+                                                            <strong class="text-nowrap">
+                                                                <i class="{% if roll.fort %}fab fa-fort-awesome{% else %}fa fa-user{% endif %}"></i>
+                                                                {{ roll.roll }}
+                                                            </strong>
+                                                        </td>
+                                                    {% endfor %}
+                                                    <th rowspan="2" class="align-middle">Pertes</th>
+                                                    <td class="text-{% if action.player == player %}danger{% else %}success{% endif %}">
+                                                        <strong class="text-nowrap">
+                                                            <i class="fa fa-users"></i>
+                                                            {{ action.details.attacker.losses }}
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Défenseur</th>
+                                                    {% for roll in action.details.defender_rolls %}
+                                                        <td class="{% if roll.wins %}text-success{% else %}text-danger{% endif %}">
+                                                            <strong class="text-nowrap">
+                                                                <i class="{% if roll.fort %}fab fa-fort-awesome{% else %}fa fa-user{% endif %}"></i>
+                                                                {{ roll.roll }}
+                                                            </strong>
+                                                        </td>
+                                                    {% endfor %}
+                                                    <td class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
+                                                        <strong class="text-nowrap">
+                                                            <i class="fa fa-users"></i>
+                                                            {{ action.details.defender.losses }}
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
                                     {% endif %}
-                                    <td class="text-center align-middle d-none d-sm-table-cell">
-                                        <span class="text-nowrap">
-                                            <span title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
-                                                <strong>{{ action.amount }}</strong>
-                                                <i class="fa fa-users"></i>
-                                            </span>
-                                            {% if action.done and action.type == 'A' %}
-                                            {% if action.player == player %}
-                                                <br />
-                                                <span class="text-{% if action.details.attacker.losses %}danger{% else %}success{% endif %}"
-                                                      title="Nombre de pertes" data-toggle="tooltip" data-placement="left">
-                                                    <strong>{{ action.details.attacker.losses }}</strong>
-                                                    <i class="fa fa-users"></i>
-                                                </span>
-                                            {% else %}
-                                                <br />
-                                                <span class="text-{% if action.details.defender.losses %}danger{% else %}success{% endif %}"
-                                                      title="Nombre de pertes" data-toggle="tooltip" data-placement="left">
-                                                    <strong>{{ action.details.defender.losses }}</strong>
-                                                    <i class="fa fa-users"></i>
-                                                </span>
-                                            {% endif %}
-                                            {% endif %}
-                                        </span>
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        {% if action.done and action.details and action.type == 'A' %}
-                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse"
-                                                    href="#details{{ action.id }}" role="button"
-                                                    aria-expanded="false" aria-controls="details{{ action.id }}">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        {% elif not action.done %}
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                    name="delete" value="{{ action.id }}"
-                                                    title="Supprimer" data-toggle="tooltip">
-                                                <i class="fa fa-trash-alt"></i>
-                                            </button>
-                                        {% elif action.details.cancelled %}
-                                            <span class="text-warning" title="{{ action.details.reason }}" data-toggle="tooltip">
-                                                <i class="fa fa-times"></i>
-                                            </span>
-                                        {% else %}
-                                            <span class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
-                                                <i class="fa fa-check"></i>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% if action.done and action.type == 'A' %}
-                                <tr id="details{{ action.id }}" class="collapse">
-                                    <td colspan="5">
-                                        {% if action.details.cancelled or action.details.reason %}
-                                            <span class="text-muted">{{ action.details.reason|default:"Annulée pour des raisons inconnues." }}</span>
-                                        {% else %}
-                                        <table>
-                                            <tr>
-                                                <th>Attaquant</th>
-                                                {% for roll in action.details.attacker_rolls %}
-                                                    <td class="{% if roll.wins %}text-success{% else %}text-danger{% endif %}">
-                                                        <strong class="text-nowrap">
-                                                            <i class="{% if roll.fort %}fab fa-fort-awesome{% else %}fa fa-user{% endif %}"></i>
-                                                            {{ roll.roll }}
-                                                        </strong>
-                                                    </td>
-                                                {% endfor %}
-                                                <th rowspan="2" class="align-middle">Pertes</th>
-                                                <td class="text-{% if action.player == player %}danger{% else %}success{% endif %}">
-                                                    <strong class="text-nowrap">
-                                                        <i class="fa fa-users"></i>
-                                                        {{ action.details.attacker.losses }}
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Défenseur</th>
-                                                {% for roll in action.details.defender_rolls %}
-                                                    <td class="{% if roll.wins %}text-success{% else %}text-danger{% endif %}">
-                                                        <strong class="text-nowrap">
-                                                            <i class="{% if roll.fort %}fab fa-fort-awesome{% else %}fa fa-user{% endif %}"></i>
-                                                            {{ roll.roll }}
-                                                        </strong>
-                                                    </td>
-                                                {% endfor %}
-                                                <td class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
-                                                    <strong class="text-nowrap">
-                                                        <i class="fa fa-users"></i>
-                                                        {{ action.details.defender.losses }}
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endif %}
+                                    {% endfor %}
                                 {% endfor %}
+                            </tbody>
+                        </table>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="py-3"></div>
+        <div id="exchanges" class="card rounded shadow">
+            <div class="card-header text-center">
+                <a href="#" class="text-decoration-none" data-toggle="collapse" data-target="#exchanges-body"
+                   aria-expanded="true" aria-controls="exchanges-body">
+                    <i class="fa fa-handshake"></i>
+                    <span>Échanges</span>
+                </a>
+            </div>
+            <div id="exchanges-body" class="card-body collapse show">
+                <div class="">
+                    <a href="{% url "front:exchange" %}" class="btn btn-primary">
+                        <i class="fa fa-hand-holding-usd"></i>
+                        <span>Faire un échange</span>
+                    </a>
+                </div>
+                {% if exchanges %}
+                <form method="post" action="{{ request.get_full_path }}">
+                    <input type="hidden" name="type" value="exchange">
+                    {% csrf_token %}
+                    <table class="table table-bordered table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th class="w-50">Expéditeur</th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-exchange-alt"></i>
+                                </th>
+                                <th class="w-50">Destinataire</th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-exchange-alt"></i>
+                                </th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-cog"></i>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exchange in exchanges %}
+                            <tr>
+                                <td class="align-middle">
+                                    <span>{{ exchange.sender }}</span>
+                                </td>
+                                <td class="align-middle">
+                                    {% if exchange.sender_money %}
+                                    <span class="text-nowrap">
+                                        {{ exchange.sender_money }}
+                                        <i class="fa fa-coins"></i>
+                                    </span>
+                                    {% endif %}
+                                    {% if exchange.sender_troops %}
+                                    <span class="text-nowrap">
+                                        {{ exchange.sender_troops }}
+                                        <i class="fa fa-users"></i>
+                                    </span>
+                                    {% endif %}
+                                    {% if not exchange.sender_money and not exchange.sender_troops %}
+                                    <span class="fa fa-warning">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle">
+                                    <span>{{ exchange.receiver }}</span>
+                                </td>
+                                <td class="align-middle">
+                                    {% if exchange.receiver_money %}
+                                    <span class="text-nowrap">
+                                        {{ exchange.receiver_money }}
+                                        <i class="fa fa-coins"></i>
+                                    </span>
+                                    {% endif %}
+                                    {% if exchange.receiver_troops %}
+                                    <span class="text-nowrap">
+                                        {{ exchange.receiver_troops }}
+                                        <i class="fa fa-users"></i>
+                                    </span>
+                                    {% endif %}
+                                    {% if not exchange.receiver_money and not exchange.receiver_troops %}
+                                    <span class="fa fa-warning">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle text-center">
+                                    {% if exchange.done %}
+                                        <span class="text-info" data-toggle="tooltip" data-html="true"
+                                              title="<strong>Accord terminé</strong><br>Les ressources ont été échangées.">
+                                            <i class="fa fa-check-circle"></i>
+                                        </span>
+                                    {% elif exchange.sender == player and exchange.accepted is None %}
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                name="delete" value="{{ exchange.id }}"
+                                                title="Supprimer" data-toggle="tooltip">
+                                            <i class="fa fa-trash-alt"></i>
+                                        </button>
+                                    {% elif exchange.accepted is True %}
+                                        <span class="text-success" data-toggle="tooltip" data-html="true"
+                                              title="<strong>Accord accepté</strong><br>Il sera traité dès que possible.">
+                                            <i class="fa fa-check"></i>
+                                        </span>
+                                    {% elif exchange.accepted is False %}
+                                        <span class="text-danger" data-toggle="tooltip" data-html="true"
+                                              title="<strong>Accord refusé</strong><br>L'expéditeur a été remboursé.">
+                                            <i class="fa fa-times"></i>
+                                        </span>
+                                    {% else %}
+                                        <div class="btn-group">
+                                            <button type="submit" style="width: 32px" class="btn btn-sm btn-success"
+                                                    name="accept" value="{{ exchange.id }}"
+                                                    title="Accepter" data-toggle="tooltip">
+                                                <i class="fa fa-check"></i>
+                                            </button>
+                                            <button type="submit" style="width: 32px" class="btn btn-sm btn-danger"
+                                                    name="reject" value="{{ exchange.id }}"
+                                                    title="Refuser" data-toggle="tooltip">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -376,12 +506,12 @@
         <div id="claims" class="card rounded shadow">
             <div class="card-header text-center">
                 <a href="#" class="text-decoration-none" data-toggle="collapse" data-target="#claims-body"
-                   aria-expanded="{% if territories %}true{% else %}false{% endif %}" aria-controls="claims-body">
+                   aria-expanded="{% if territories %}false{% else %}show{% endif %}" aria-controls="claims-body">
                     <i class="fa fa-flag"></i>
                     <span>Revendications</span>
                 </a>
             </div>
-            <div id="claims-body" class="card-body collapse {% if not territories %}false{% endif %}">
+            <div id="claims-body" class="card-body collapse {% if not territories %}show{% endif %}">
                 <div class="">
                     <a href="{% url "front:map_claims" %}?last={{ last_claim|date:'U' }}" class="btn btn-primary">
                         <i class="fa fa-globe-europe"></i>
