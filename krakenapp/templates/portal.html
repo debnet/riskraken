@@ -267,11 +267,29 @@
                                         </small>
                                     </td>
                                     {% endif %}
-                                    <td class="text-center align-middle d-none d-sm-table-cell"
-                                        title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
+                                    <td class="text-center align-middle d-none d-sm-table-cell">
                                         <span class="text-nowrap">
-                                            <strong>{{ action.amount }}</strong>
-                                            <i class="fa fa-users"></i>
+                                            <span title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
+                                                <strong>{{ action.amount }}</strong>
+                                                <i class="fa fa-users"></i>
+                                            </span>
+                                            {% if action.done and action.type == 'A' %}
+                                            {% if action.player == player %}
+                                                <br />
+                                                <span class="text-{% if action.details.attacker.losses %}danger{% else %}success{% endif %}"
+                                                      title="Nombre de pertes" data-toggle="tooltip" data-placement="left">
+                                                    <strong>{{ action.details.attacker.losses }}</strong>
+                                                    <i class="fa fa-users"></i>
+                                                </span>
+                                            {% else %}
+                                                <br />
+                                                <span class="text-{% if action.details.defender.losses %}danger{% else %}success{% endif %}"
+                                                      title="Nombre de pertes" data-toggle="tooltip" data-placement="left">
+                                                    <strong>{{ action.details.defender.losses }}</strong>
+                                                    <i class="fa fa-users"></i>
+                                                </span>
+                                            {% endif %}
+                                            {% endif %}
                                         </span>
                                     </td>
                                     <td class="text-center align-middle">
