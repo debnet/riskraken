@@ -354,13 +354,12 @@ def action(request, zone):
 @login_required
 @render_to('exchange.html')
 def exchange(request):
-    player = request.user
+    player = get_object_or_404(Player, id=request.user.id)
     neighbours = set(sum([NEIGHBOURS[t.zone] for t in Territory.objects.filter(player=player).only('zone')], []))
     players = Territory.objects.filter(zone__in=neighbours, player__isnull=False).values('player_id').distinct()
     players = Player.objects.exclude(id=player.id).filter(id__in=players).order_by('full_name')
 
     def add_form_validation(form):
-        # players = Player.objects.with_rates().exclude(id=request.user.id).filter(count__gt=0).order_by('full_name')
         form.fields['receiver'].queryset = players
         field = form.fields['sender_money']
         field.max_value = player.money
