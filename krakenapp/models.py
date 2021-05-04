@@ -29,10 +29,13 @@ def upload_to(instance, filename):
 
 
 def validate_image_size(image):
-    limit = 150
-    file_size = image.file.size
-    if file_size > limit * 1024:
-        raise ValidationError("L'image ne doit pas faire plus de %s kB." % limit)
+    try:
+        limit = 150
+        file_size = image.file.size
+        if file_size > limit * 1024:
+            raise ValidationError("L'image ne doit pas faire plus de %s kB." % limit)
+    except FileNotFoundError:
+        pass
 
 
 class Player(AbstractUser):

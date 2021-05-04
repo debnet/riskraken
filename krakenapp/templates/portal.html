@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <form method="post" action="{{ request.get_full_path }}">
-                    <input type="hidden" name="type" value="actions">
+                    <input type="hidden" name="type" value="territory">
                     <input type="hidden" id="reserve" name="reserve" value="{{ player.reserve }}">
                     {% csrf_token %}
                     <table class="table table-bordered table-striped">
