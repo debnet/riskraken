@@ -38,7 +38,8 @@ def portal(request):
         Q(player=player) | Q(defender=player, done=True), date__gt=datetime.date.today() - datetime.timedelta(days=5)
     ).order_by('-date', '-type')
     exchanges = Exchange.objects.select_related('sender', 'receiver').filter(
-        Q(sender=player) | Q(receiver=player), creation_date__gt=now() - datetime.timedelta(days=5)
+        Q(sender=player) | Q(receiver=player),
+        Q(done=False) | Q(creation_date__gt=now() - datetime.timedelta(days=5))
     ).order_by('-creation_date')
     form = UserEditForm(instance=player)
     if request.method == 'POST':
@@ -323,6 +324,9 @@ def claim(request, zone):
 @login_required
 @render_to('action.html')
 def action(request, zone):
+    if Action.objects.filter(date=datetime.date.today() - datetime.timedelta(days=1), done=False).exists():
+        messages.warning(request, "Les actions planifiées de la veille n'ont pas encore été exécutées !")
+        return redirect('front:portal')
     action_type = request.resolver_match.url_name[0].upper()
     territory = Territory.objects.select_related('player')
     if action_type == 'A':
