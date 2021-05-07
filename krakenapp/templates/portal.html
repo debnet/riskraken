@@ -275,7 +275,7 @@
                                                     <strong>{{ action.amount }}</strong>
                                                     <i class="fa fa-users"></i>
                                                 </span>
-                                                {% if action.done and action.type == 'A' %}
+                                                {% if action.done and action.type == 'A' and not action.details.cancelled %}
                                                 {% if action.player == player %}
                                                     <br />
                                                     <span class="text-{% if action.details.attacker.losses %}danger{% else %}success{% endif %}"
