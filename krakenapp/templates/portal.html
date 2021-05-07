@@ -142,7 +142,7 @@
                                         {% check_update territory.id "Casernes" 'prods' territory.prods player.money %}
                                     </td>
                                     <td class="text-center align-middle text-nowrap">
-                                        <input type="number" style="width: 3em" class="troops"
+                                        <input type="number" style="width: 4em" class="troops"
                                                data-initial="{{ territory.troops }}" data-limit="{{ territory.limit }}"
                                                name="{{ territory.zone }}" value="{{ territory.troops }}"
                                                min="{{ territory.troops }}" aria-valuemin="{{ territory.troops }}"
@@ -309,7 +309,7 @@
                                                 </button>
                                             {% elif action.details.cancelled %}
                                                 <span class="text-warning" title="{{ action.details.reason }}" data-toggle="tooltip">
-                                                    <i class="fa fa-times"></i>
+                                                    <i class="fas fa-times"></i>
                                                 </span>
                                             {% else %}
                                                 <span class="text-{% if action.player == player %}success{% else %}danger{% endif %}">
@@ -429,8 +429,8 @@
                                     </span>
                                     {% endif %}
                                     {% if not exchange.sender_money and not exchange.sender_troops %}
-                                    <span class="fa fa-warning">
-                                        <i class="fa fa-times"></i>
+                                    <span class="text-warning">
+                                        <i class="fas fa-times"></i>
                                     </span>
                                     {% endif %}
                                 </td>
@@ -451,8 +451,8 @@
                                     </span>
                                     {% endif %}
                                     {% if not exchange.receiver_money and not exchange.receiver_troops %}
-                                    <span class="fa fa-warning">
-                                        <i class="fa fa-times"></i>
+                                    <span class="text-warning">
+                                        <i class="fas fa-times"></i>
                                     </span>
                                     {% endif %}
                                 </td>
@@ -476,7 +476,7 @@
                                     {% elif exchange.accepted is False %}
                                         <span class="text-danger" data-toggle="tooltip" data-html="true"
                                               title="<strong>Accord refusé</strong><br>L'expéditeur a été remboursé.">
-                                            <i class="fa fa-times"></i>
+                                            <i class="fas fa-times"></i>
                                         </span>
                                     {% else %}
                                         <div class="btn-group">
@@ -488,7 +488,7 @@
                                             <button type="submit" style="width: 32px" class="btn btn-sm btn-danger"
                                                     name="reject" value="{{ exchange.id }}"
                                                     title="Refuser" data-toggle="tooltip">
-                                                <i class="fa fa-times"></i>
+                                                <i class="fas fa-times"></i>
                                             </button>
                                         </div>
                                     {% endif %}
