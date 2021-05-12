@@ -71,7 +71,6 @@ class Player(AbstractUser):
     class Meta(AbstractUser.Meta):
         verbose_name = "joueur"
         verbose_name_plural = "joueurs"
-        ordering = ('full_name', )
 
 
 class ClaimQuerySet(EntityQuerySet):
@@ -122,7 +121,6 @@ class Claim(Entity):
         verbose_name = "revendication"
         verbose_name_plural = "revendications"
         unique_together = ('zone', 'player')
-        ordering = ('zone', 'player')
 
 
 class Territory(Entity):
@@ -153,7 +151,6 @@ class Territory(Entity):
         verbose_name = "territoire"
         verbose_name_plural = "territoires"
         unique_together = ('zone', 'player')
-        ordering = ('zone', 'player')
 
 
 class Action(CommonModel):
@@ -203,7 +200,6 @@ class Action(CommonModel):
         verbose_name = "action"
         verbose_name_plural = "actions"
         unique_together = ('date', 'player', 'source')
-        ordering = ('-date', 'player')
 
 
 class Exchange(CommonModel):

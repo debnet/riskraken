@@ -1,6 +1,6 @@
-Django==3.2.1
+Django==3.2.2
 Pillow==8.2.0
-common-framework==2021.4.21
+common-framework==2021.5.1
 coreapi==2.3.3
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.6.0
@@ -10,9 +10,9 @@ django-crispy-forms==1.11.2
 django-debug-toolbar==3.2.1
 django-filter==2.4.0
 django-htmlmin==0.11.0
-flake8==3.9.1
+flake8==3.9.2
 folium==0.12.1
-ipython==7.23.0
+ipython==7.23.1
 markdown==3.3.4
 markdown2==2.4.0
 python-dateutil==2.8.1
