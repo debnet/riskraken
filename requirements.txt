@@ -1,4 +1,4 @@
-Django==3.2.2
+Django==3.2.3
 Pillow==8.2.0
 common-framework==2021.5.1
 coreapi==2.3.3
