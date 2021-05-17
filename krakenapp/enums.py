@@ -97,7 +97,7 @@ ZONES = (
     ('fr_16003', 'Confolens (Charente, France)'),
     ('fr_17001', 'Jonzac (Charente-Maritime, France)'),
     ('fr_17002', 'Rochefort (Charente-Maritime, France)'),
-    ('fr_17003', 'Rochelle (Charente-Maritime, France)'),
+    ('fr_17003', 'La Rochelle (Charente-Maritime, France)'),
     ('fr_17004', 'Saintes (Charente-Maritime, France)'),
     ('fr_17005', "Saint-Jean-d'Angély (Charente-Maritime, France)"),
     ('fr_18001', 'Bourges (Cher, France)'),
@@ -143,7 +143,7 @@ ZONES = (
     ('fr_2B005', 'Calvi (Haute-Corse, France)'),
     ('fr_30001', 'Alès (Gard, France)'),
     ('fr_30002', 'Nîmes (Gard, France)'),
-    ('fr_30003', 'Vigan (Gard, France)'),
+    ('fr_30003', 'Le Vigan (Gard, France)'),
     ('fr_31001', 'Muret (Haute-Garonne, France)'),
     ('fr_31002', 'Saint-Gaudens (Haute-Garonne, France)'),
     ('fr_31003', 'Toulouse (Haute-Garonne, France)'),
@@ -163,15 +163,15 @@ ZONES = (
     ('fr_35002', 'Redon (Ille-et-Vilaine, France)'),
     ('fr_35003', 'Rennes (Ille-et-Vilaine, France)'),
     ('fr_35004', 'Saint-Malo (Ille-et-Vilaine, France)'),
-    ('fr_36001', 'Blanc (Indre, France)'),
+    ('fr_36001', 'Le Blanc (Indre, France)'),
     ('fr_36002', 'Châteauroux (Indre, France)'),
-    ('fr_36003', 'Châtre (Indre, France)'),
+    ('fr_36003', 'La Châtre (Indre, France)'),
     ('fr_36004', 'Issoudun (Indre, France)'),
     ('fr_37001', 'Chinon (Indre-et-Loire, France)'),
     ('fr_37002', 'Tours (Indre-et-Loire, France)'),
     ('fr_37003', 'Loches (Indre-et-Loire, France)'),
     ('fr_38001', 'Grenoble (Isère, France)'),
-    ('fr_38002', 'Tour-du-Pin (Isère, France)'),
+    ('fr_38002', 'La Tour-du-Pin (Isère, France)'),
     ('fr_38003', 'Vienne (Isère, France)'),
     ('fr_39001', 'Dole (Jura, France)'),
     ('fr_39002', 'Lons-le-Saunier (Jura, France)'),
@@ -185,7 +185,7 @@ ZONES = (
     ('fr_42002', 'Roanne (Loire, France)'),
     ('fr_42003', 'Saint-Étienne (Loire, France)'),
     ('fr_43001', 'Brioude (Haute-Loire, France)'),
-    ('fr_43002', 'Puy-en-Velay (Haute-Loire, France)'),
+    ('fr_43002', 'Le Puy-en-Velay (Haute-Loire, France)'),
     ('fr_43003', 'Yssingeaux (Haute-Loire, France)'),
     ('fr_44002', 'Nantes (Loire-Atlantique, France)'),
     ('fr_44003', 'Saint-Nazaire (Loire-Atlantique, France)'),
@@ -291,9 +291,9 @@ ZONES = (
     ('fr_71003', 'Charolles (Saône-et-Loire, France)'),
     ('fr_71004', 'Louhans (Saône-et-Loire, France)'),
     ('fr_71005', 'Mâcon (Saône-et-Loire, France)'),
-    ('fr_72001', 'Flèche (Sarthe, France)'),
+    ('fr_72001', 'La Flèche (Sarthe, France)'),
     ('fr_72002', 'Mamers (Sarthe, France)'),
-    ('fr_72003', 'Mans (Sarthe, France)'),
+    ('fr_72003', 'Le Mans (Sarthe, France)'),
     ('fr_73001', 'Albertville (Savoie, France)'),
     ('fr_73002', 'Chambéry (Savoie, France)'),
     ('fr_73003', 'Saint-Jean-de-Maurienne (Savoie, France)'),
@@ -358,7 +358,7 @@ ZONES = (
     ('fr_93003', 'Saint-Denis (Seine-St-Denis, France)'),
     ('fr_94001', 'Créteil (Val-de-Marne, France)'),
     ('fr_94002', 'Nogent-sur-Marne (Val-de-Marne, France)'),
-    ('fr_94003', 'Haÿ-les-Roses (Val-de-Marne, France)'),
+    ('fr_94003', 'L\'Haÿ-les-Roses (Val-de-Marne, France)'),
     ('fr_95001', "Argenteuil (Val-D'Oise, France)"),
     ('fr_95002', "Sarcelles (Val-D'Oise, France)"),
     ('fr_95003', "Pontoise (Val-D'Oise, France)"))
@@ -680,14 +680,14 @@ NEIGHBOURS = {
     'fr_01001': [    # Belley (Ain, France)
         'fr_01002',  # Bourg-en-Bresse (Ain, France)
         'fr_01004',  # Nantua (Ain, France)
-        'fr_38002',  # Tour-du-Pin (Isère, France)
+        'fr_38002',  # La Tour-du-Pin (Isère, France)
         'fr_73002',  # Chambéry (Savoie, France)
         'fr_74003',  # Saint-Julien-en-Genevois (Haute-Savoie, France)
     ],
     'fr_01002': [    # Bourg-en-Bresse (Ain, France)
         'fr_01001',  # Belley (Ain, France)
         'fr_01004',  # Nantua (Ain, France)
-        'fr_38002',  # Tour-du-Pin (Isère, France)
+        'fr_38002',  # La Tour-du-Pin (Isère, France)
         'fr_39002',  # Lons-le-Saunier (Jura, France)
         'fr_69001',  # Lyon (Rhône, France)
         'fr_69002',  # Villefranche-sur-Saône (Rhône, France)
@@ -829,7 +829,7 @@ NEIGHBOURS = {
         'fr_07003',  # Tournon-sur-Rhône (Ardèche, France)
         'fr_30001',  # Alès (Gard, France)
         'fr_30002',  # Nîmes (Gard, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
         'fr_48002',  # Mende (Lozère, France)
     ],
     'fr_07002': [    # Privas (Ardèche, France)
@@ -847,7 +847,7 @@ NEIGHBOURS = {
         'fr_26003',  # Valence (Drôme, France)
         'fr_38003',  # Vienne (Isère, France)
         'fr_42003',  # Saint-Étienne (Loire, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
         'fr_43003',  # Yssingeaux (Haute-Loire, France)
     ],
     'fr_08001': [    # Charleville-Mézières (Ardennes, France)
@@ -951,7 +951,7 @@ NEIGHBOURS = {
     'fr_12001': [    # Millau (Aveyron, France)
         'fr_12002',  # Rodez (Aveyron, France)
         'fr_12003',  # Villefranche-de-Rouergue (Aveyron, France)
-        'fr_30003',  # Vigan (Gard, France)
+        'fr_30003',  # Le Vigan (Gard, France)
         'fr_34001',  # Béziers (Hérault, France)
         'fr_34002',  # Lodève (Hérault, France)
         'fr_48001',  # Florac (Lozère, France)
@@ -1081,13 +1081,13 @@ NEIGHBOURS = {
         'fr_33005',  # Libourne (Gironde, France)
     ],
     'fr_17002': [    # Rochefort (Charente-Maritime, France)
-        'fr_17003',  # Rochelle (Charente-Maritime, France)
+        'fr_17003',  # La Rochelle (Charente-Maritime, France)
         'fr_17004',  # Saintes (Charente-Maritime, France)
         'fr_17005',  # Saint-Jean-d'Angély (Charente-Maritime, France)
         'fr_33004',  # Lesparre-Médoc (Gironde, France)
         'fr_79002',  # Niort (Deux-Sèvres, France)
     ],
-    'fr_17003': [    # Rochelle (Charente-Maritime, France)
+    'fr_17003': [    # La Rochelle (Charente-Maritime, France)
         'fr_17002',  # Rochefort (Charente-Maritime, France)
         'fr_79002',  # Niort (Deux-Sèvres, France)
         'fr_85001',  # Fontenay-le-Comte (Vendée, France)
@@ -1119,7 +1119,7 @@ NEIGHBOURS = {
         'fr_03002',  # Moulins (Allier, France)
         'fr_18001',  # Bourges (Cher, France)
         'fr_23001',  # Aubusson (Creuse, France)
-        'fr_36003',  # Châtre (Indre, France)
+        'fr_36003',  # La Châtre (Indre, France)
         'fr_36004',  # Issoudun (Indre, France)
         'fr_58003',  # Nevers (Nièvre, France)
     ],
@@ -1207,15 +1207,15 @@ NEIGHBOURS = {
         'fr_19002',  # Tulle (Corrèze, France)
         'fr_19003',  # Ussel (Corrèze, France)
         'fr_23002',  # Guéret (Creuse, France)
-        'fr_36003',  # Châtre (Indre, France)
+        'fr_36003',  # La Châtre (Indre, France)
         'fr_63004',  # Riom (Puy-de-Dôme, France)
         'fr_87002',  # Limoges (Haute-Vienne, France)
     ],
     'fr_23002': [    # Guéret (Creuse, France)
         'fr_23001',  # Aubusson (Creuse, France)
-        'fr_36001',  # Blanc (Indre, France)
+        'fr_36001',  # Le Blanc (Indre, France)
         'fr_36002',  # Châteauroux (Indre, France)
-        'fr_36003',  # Châtre (Indre, France)
+        'fr_36003',  # La Châtre (Indre, France)
         'fr_87001',  # Bellac (Haute-Vienne, France)
         'fr_87002',  # Limoges (Haute-Vienne, France)
     ],
@@ -1400,7 +1400,7 @@ NEIGHBOURS = {
     'fr_30001': [    # Alès (Gard, France)
         'fr_07001',  # Largentière (Ardèche, France)
         'fr_30002',  # Nîmes (Gard, France)
-        'fr_30003',  # Vigan (Gard, France)
+        'fr_30003',  # Le Vigan (Gard, France)
         'fr_48001',  # Florac (Lozère, France)
         'fr_48002',  # Mende (Lozère, France)
     ],
@@ -1409,12 +1409,12 @@ NEIGHBOURS = {
         'fr_07002',  # Privas (Ardèche, France)
         'fr_13002',  # Arles (Bouches-du-Rhône, France)
         'fr_30001',  # Alès (Gard, France)
-        'fr_30003',  # Vigan (Gard, France)
+        'fr_30003',  # Le Vigan (Gard, France)
         'fr_34003',  # Montpellier (Hérault, France)
         'fr_84002',  # Avignon (Vaucluse, France)
         'fr_84003',  # Carpentras (Vaucluse, France)
     ],
-    'fr_30003': [    # Vigan (Gard, France)
+    'fr_30003': [    # Le Vigan (Gard, France)
         'fr_12001',  # Millau (Aveyron, France)
         'fr_30001',  # Alès (Gard, France)
         'fr_30002',  # Nîmes (Gard, France)
@@ -1526,13 +1526,13 @@ NEIGHBOURS = {
     ],
     'fr_34002': [    # Lodève (Hérault, France)
         'fr_12001',  # Millau (Aveyron, France)
-        'fr_30003',  # Vigan (Gard, France)
+        'fr_30003',  # Le Vigan (Gard, France)
         'fr_34001',  # Béziers (Hérault, France)
         'fr_34003',  # Montpellier (Hérault, France)
     ],
     'fr_34003': [    # Montpellier (Hérault, France)
         'fr_30002',  # Nîmes (Gard, France)
-        'fr_30003',  # Vigan (Gard, France)
+        'fr_30003',  # Le Vigan (Gard, France)
         'fr_34001',  # Béziers (Hérault, France)
         'fr_34002',  # Lodève (Hérault, France)
     ],
@@ -1568,7 +1568,7 @@ NEIGHBOURS = {
         'fr_35003',  # Rennes (Ille-et-Vilaine, France)
         'fr_50001',  # Avranches (Manche, France)
     ],
-    'fr_36001': [    # Blanc (Indre, France)
+    'fr_36001': [    # Le Blanc (Indre, France)
         'fr_23002',  # Guéret (Creuse, France)
         'fr_36002',  # Châteauroux (Indre, France)
         'fr_37003',  # Loches (Indre-et-Loire, France)
@@ -1578,13 +1578,13 @@ NEIGHBOURS = {
     ],
     'fr_36002': [    # Châteauroux (Indre, France)
         'fr_23002',  # Guéret (Creuse, France)
-        'fr_36001',  # Blanc (Indre, France)
-        'fr_36003',  # Châtre (Indre, France)
+        'fr_36001',  # Le Blanc (Indre, France)
+        'fr_36003',  # La Châtre (Indre, France)
         'fr_36004',  # Issoudun (Indre, France)
         'fr_37003',  # Loches (Indre-et-Loire, France)
         'fr_41003',  # Romorantin-Lanthenay (Loir-et-Cher, France)
     ],
-    'fr_36003': [    # Châtre (Indre, France)
+    'fr_36003': [    # La Châtre (Indre, France)
         'fr_18002',  # Saint-Amand-Montrond (Cher, France)
         'fr_23001',  # Aubusson (Creuse, France)
         'fr_23002',  # Guéret (Creuse, France)
@@ -1596,7 +1596,7 @@ NEIGHBOURS = {
         'fr_18002',  # Saint-Amand-Montrond (Cher, France)
         'fr_18003',  # Vierzon (Cher, France)
         'fr_36002',  # Châteauroux (Indre, France)
-        'fr_36003',  # Châtre (Indre, France)
+        'fr_36003',  # La Châtre (Indre, France)
         'fr_41003',  # Romorantin-Lanthenay (Loir-et-Cher, France)
     ],
     'fr_37001': [    # Chinon (Indre-et-Loire, France)
@@ -1604,7 +1604,7 @@ NEIGHBOURS = {
         'fr_37003',  # Loches (Indre-et-Loire, France)
         'fr_41002',  # Vendôme (Loir-et-Cher, France)
         'fr_49003',  # Saumur (Maine-et-Loire, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
         'fr_86001',  # Châtellerault (Vienne, France)
     ],
     'fr_37002': [    # Tours (Indre-et-Loire, France)
@@ -1612,7 +1612,7 @@ NEIGHBOURS = {
         'fr_37003',  # Loches (Indre-et-Loire, France)
     ],
     'fr_37003': [    # Loches (Indre-et-Loire, France)
-        'fr_36001',  # Blanc (Indre, France)
+        'fr_36001',  # Le Blanc (Indre, France)
         'fr_36002',  # Châteauroux (Indre, France)
         'fr_37001',  # Chinon (Indre-et-Loire, France)
         'fr_37002',  # Tours (Indre-et-Loire, France)
@@ -1626,12 +1626,12 @@ NEIGHBOURS = {
         'fr_05002',  # Gap (Hautes-Alpes, France)
         'fr_26001',  # Die (Drôme, France)
         'fr_26003',  # Valence (Drôme, France)
-        'fr_38002',  # Tour-du-Pin (Isère, France)
+        'fr_38002',  # La Tour-du-Pin (Isère, France)
         'fr_38003',  # Vienne (Isère, France)
         'fr_73002',  # Chambéry (Savoie, France)
         'fr_73003',  # Saint-Jean-de-Maurienne (Savoie, France)
     ],
-    'fr_38002': [    # Tour-du-Pin (Isère, France)
+    'fr_38002': [    # La Tour-du-Pin (Isère, France)
         'fr_01001',  # Belley (Ain, France)
         'fr_01002',  # Bourg-en-Bresse (Ain, France)
         'fr_38001',  # Grenoble (Isère, France)
@@ -1643,7 +1643,7 @@ NEIGHBOURS = {
         'fr_07003',  # Tournon-sur-Rhône (Ardèche, France)
         'fr_26003',  # Valence (Drôme, France)
         'fr_38001',  # Grenoble (Isère, France)
-        'fr_38002',  # Tour-du-Pin (Isère, France)
+        'fr_38002',  # La Tour-du-Pin (Isère, France)
         'fr_42003',  # Saint-Étienne (Loire, France)
         'fr_69001',  # Lyon (Rhône, France)
     ],
@@ -1698,7 +1698,7 @@ NEIGHBOURS = {
         'fr_37001',  # Chinon (Indre-et-Loire, France)
         'fr_37003',  # Loches (Indre-et-Loire, France)
         'fr_41001',  # Blois (Loir-et-Cher, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
         'fr_72002',  # Mamers (Sarthe, France)
     ],
     'fr_41003': [    # Romorantin-Lanthenay (Loir-et-Cher, France)
@@ -1712,7 +1712,7 @@ NEIGHBOURS = {
     'fr_42001': [    # Montbrison (Loire, France)
         'fr_42002',  # Roanne (Loire, France)
         'fr_42003',  # Saint-Étienne (Loire, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
         'fr_43003',  # Yssingeaux (Haute-Loire, France)
         'fr_63001',  # Ambert (Puy-de-Dôme, France)
         'fr_63005',  # Thiers (Puy-de-Dôme, France)
@@ -1735,12 +1735,12 @@ NEIGHBOURS = {
     ],
     'fr_43001': [    # Brioude (Haute-Loire, France)
         'fr_15003',  # Saint-Flour (Cantal, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
         'fr_48002',  # Mende (Lozère, France)
         'fr_63001',  # Ambert (Puy-de-Dôme, France)
         'fr_63003',  # Issoire (Puy-de-Dôme, France)
     ],
-    'fr_43002': [    # Puy-en-Velay (Haute-Loire, France)
+    'fr_43002': [    # Le Puy-en-Velay (Haute-Loire, France)
         'fr_07001',  # Largentière (Ardèche, France)
         'fr_07003',  # Tournon-sur-Rhône (Ardèche, France)
         'fr_42001',  # Montbrison (Loire, France)
@@ -1753,7 +1753,7 @@ NEIGHBOURS = {
         'fr_07003',  # Tournon-sur-Rhône (Ardèche, France)
         'fr_42001',  # Montbrison (Loire, France)
         'fr_42003',  # Saint-Étienne (Loire, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
     ],
     'fr_44002': [    # Nantes (Loire-Atlantique, France)
         'fr_44003',  # Saint-Nazaire (Loire-Atlantique, France)
@@ -1862,7 +1862,7 @@ NEIGHBOURS = {
         'fr_12001',  # Millau (Aveyron, France)
         'fr_12002',  # Rodez (Aveyron, France)
         'fr_30001',  # Alès (Gard, France)
-        'fr_30003',  # Vigan (Gard, France)
+        'fr_30003',  # Le Vigan (Gard, France)
         'fr_48002',  # Mende (Lozère, France)
     ],
     'fr_48002': [    # Mende (Lozère, France)
@@ -1871,7 +1871,7 @@ NEIGHBOURS = {
         'fr_15003',  # Saint-Flour (Cantal, France)
         'fr_30001',  # Alès (Gard, France)
         'fr_43001',  # Brioude (Haute-Loire, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
         'fr_48001',  # Florac (Lozère, France)
     ],
     'fr_49001': [    # Angers (Maine-et-Loire, France)
@@ -1880,7 +1880,7 @@ NEIGHBOURS = {
         'fr_49003',  # Saumur (Maine-et-Loire, France)
         'fr_49004',  # Segré (Maine-et-Loire, France)
         'fr_53001',  # Château-Gontier (Mayenne, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
     ],
     'fr_49002': [    # Cholet (Maine-et-Loire, France)
         'fr_44002',  # Nantes (Loire-Atlantique, France)
@@ -1894,7 +1894,7 @@ NEIGHBOURS = {
         'fr_37001',  # Chinon (Indre-et-Loire, France)
         'fr_49001',  # Angers (Maine-et-Loire, France)
         'fr_49002',  # Cholet (Maine-et-Loire, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
         'fr_79001',  # Bressuire (Deux-Sèvres, France)
         'fr_86001',  # Châtellerault (Vienne, France)
     ],
@@ -1992,7 +1992,7 @@ NEIGHBOURS = {
         'fr_49004',  # Segré (Maine-et-Loire, France)
         'fr_53002',  # Laval (Mayenne, France)
         'fr_53003',  # Mayenne (Mayenne, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
     ],
     'fr_53002': [    # Laval (Mayenne, France)
         'fr_35001',  # Fougères-Vitré (Ille-et-Vilaine, France)
@@ -2005,7 +2005,7 @@ NEIGHBOURS = {
         'fr_53001',  # Château-Gontier (Mayenne, France)
         'fr_53002',  # Laval (Mayenne, France)
         'fr_61001',  # Alençon (Orne, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
         'fr_72002',  # Mamers (Sarthe, France)
     ],
     'fr_54001': [    # Briey (Meurthe-et-Moselle, France)
@@ -2312,7 +2312,7 @@ NEIGHBOURS = {
     'fr_63001': [    # Ambert (Puy-de-Dôme, France)
         'fr_42001',  # Montbrison (Loire, France)
         'fr_43001',  # Brioude (Haute-Loire, France)
-        'fr_43002',  # Puy-en-Velay (Haute-Loire, France)
+        'fr_43002',  # Le Puy-en-Velay (Haute-Loire, France)
         'fr_63002',  # Clermont-Ferrand (Puy-de-Dôme, France)
         'fr_63003',  # Issoire (Puy-de-Dôme, France)
         'fr_63005',  # Thiers (Puy-de-Dôme, France)
@@ -2459,7 +2459,7 @@ NEIGHBOURS = {
     ],
     'fr_69001': [    # Lyon (Rhône, France)
         'fr_01002',  # Bourg-en-Bresse (Ain, France)
-        'fr_38002',  # Tour-du-Pin (Isère, France)
+        'fr_38002',  # La Tour-du-Pin (Isère, France)
         'fr_38003',  # Vienne (Isère, France)
         'fr_42001',  # Montbrison (Loire, France)
         'fr_42002',  # Roanne (Loire, France)
@@ -2527,7 +2527,7 @@ NEIGHBOURS = {
         'fr_71003',  # Charolles (Saône-et-Loire, France)
         'fr_71004',  # Louhans (Saône-et-Loire, France)
     ],
-    'fr_72001': [    # Flèche (Sarthe, France)
+    'fr_72001': [    # La Flèche (Sarthe, France)
         'fr_37001',  # Chinon (Indre-et-Loire, France)
         'fr_41002',  # Vendôme (Loir-et-Cher, France)
         'fr_49001',  # Angers (Maine-et-Loire, France)
@@ -2535,7 +2535,7 @@ NEIGHBOURS = {
         'fr_53001',  # Château-Gontier (Mayenne, France)
         'fr_53003',  # Mayenne (Mayenne, France)
         'fr_72002',  # Mamers (Sarthe, France)
-        'fr_72003',  # Mans (Sarthe, France)
+        'fr_72003',  # Le Mans (Sarthe, France)
     ],
     'fr_72002': [    # Mamers (Sarthe, France)
         'fr_28004',  # Nogent-le-Rotrou (Eure-et-Loir, France)
@@ -2543,11 +2543,11 @@ NEIGHBOURS = {
         'fr_53003',  # Mayenne (Mayenne, France)
         'fr_61001',  # Alençon (Orne, France)
         'fr_61003',  # Mortagne-au-Perche (Orne, France)
-        'fr_72001',  # Flèche (Sarthe, France)
-        'fr_72003',  # Mans (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
+        'fr_72003',  # Le Mans (Sarthe, France)
     ],
-    'fr_72003': [    # Mans (Sarthe, France)
-        'fr_72001',  # Flèche (Sarthe, France)
+    'fr_72003': [    # Le Mans (Sarthe, France)
+        'fr_72001',  # La Flèche (Sarthe, France)
         'fr_72002',  # Mamers (Sarthe, France)
     ],
     'fr_73001': [    # Albertville (Savoie, France)
@@ -2559,7 +2559,7 @@ NEIGHBOURS = {
     'fr_73002': [    # Chambéry (Savoie, France)
         'fr_01001',  # Belley (Ain, France)
         'fr_38001',  # Grenoble (Isère, France)
-        'fr_38002',  # Tour-du-Pin (Isère, France)
+        'fr_38002',  # La Tour-du-Pin (Isère, France)
         'fr_73001',  # Albertville (Savoie, France)
         'fr_73003',  # Saint-Jean-de-Maurienne (Savoie, France)
         'fr_74001',  # Annecy (Haute-Savoie, France)
@@ -2603,7 +2603,7 @@ NEIGHBOURS = {
         'fr_93001',  # Bobigny (Seine-St-Denis, France)
         'fr_93003',  # Saint-Denis (Seine-St-Denis, France)
         'fr_94002',  # Nogent-sur-Marne (Val-de-Marne, France)
-        'fr_94003',  # Haÿ-les-Roses (Val-de-Marne, France)
+        'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
     'fr_76001': [    # Dieppe (Seine-Maritime, France)
         'fr_27001',  # Andelys (Eure, France)
@@ -2707,7 +2707,7 @@ NEIGHBOURS = {
     'fr_79002': [    # Niort (Deux-Sèvres, France)
         'fr_16003',  # Confolens (Charente, France)
         'fr_17002',  # Rochefort (Charente-Maritime, France)
-        'fr_17003',  # Rochelle (Charente-Maritime, France)
+        'fr_17003',  # La Rochelle (Charente-Maritime, France)
         'fr_17005',  # Saint-Jean-d'Angély (Charente-Maritime, France)
         'fr_79003',  # Parthenay (Deux-Sèvres, France)
         'fr_85001',  # Fontenay-le-Comte (Vendée, France)
@@ -2824,7 +2824,7 @@ NEIGHBOURS = {
         'fr_84002',  # Avignon (Vaucluse, France)
     ],
     'fr_85001': [    # Fontenay-le-Comte (Vendée, France)
-        'fr_17003',  # Rochelle (Charente-Maritime, France)
+        'fr_17003',  # La Rochelle (Charente-Maritime, France)
         'fr_79001',  # Bressuire (Deux-Sèvres, France)
         'fr_79002',  # Niort (Deux-Sèvres, France)
         'fr_79003',  # Parthenay (Deux-Sèvres, France)
@@ -2845,7 +2845,7 @@ NEIGHBOURS = {
         'fr_85002',  # Roche-sur-Yon (Vendée, France)
     ],
     'fr_86001': [    # Châtellerault (Vienne, France)
-        'fr_36001',  # Blanc (Indre, France)
+        'fr_36001',  # Le Blanc (Indre, France)
         'fr_37001',  # Chinon (Indre-et-Loire, France)
         'fr_37003',  # Loches (Indre-et-Loire, France)
         'fr_49003',  # Saumur (Maine-et-Loire, France)
@@ -2856,7 +2856,7 @@ NEIGHBOURS = {
     ],
     'fr_86002': [    # Montmorillon (Vienne, France)
         'fr_16003',  # Confolens (Charente, France)
-        'fr_36001',  # Blanc (Indre, France)
+        'fr_36001',  # Le Blanc (Indre, France)
         'fr_79002',  # Niort (Deux-Sèvres, France)
         'fr_86001',  # Châtellerault (Vienne, France)
         'fr_86003',  # Poitiers (Vienne, France)
@@ -2871,7 +2871,7 @@ NEIGHBOURS = {
     'fr_87001': [    # Bellac (Haute-Vienne, France)
         'fr_16003',  # Confolens (Charente, France)
         'fr_23002',  # Guéret (Creuse, France)
-        'fr_36001',  # Blanc (Indre, France)
+        'fr_36001',  # Le Blanc (Indre, France)
         'fr_86002',  # Montmorillon (Vienne, France)
         'fr_87002',  # Limoges (Haute-Vienne, France)
         'fr_87003',  # Rochechouart (Haute-Vienne, France)
@@ -2964,7 +2964,7 @@ NEIGHBOURS = {
         'fr_91001',  # Étampes (Essonne, France)
         'fr_91003',  # Palaiseau (Essonne, France)
         'fr_94001',  # Créteil (Val-de-Marne, France)
-        'fr_94003',  # Haÿ-les-Roses (Val-de-Marne, France)
+        'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
     'fr_91003': [    # Palaiseau (Essonne, France)
         'fr_78002',  # Rambouillet (Yvelines, France)
@@ -2972,14 +2972,14 @@ NEIGHBOURS = {
         'fr_91001',  # Étampes (Essonne, France)
         'fr_91002',  # Évry (Essonne, France)
         'fr_92001',  # Antony (Hauts-de-Seine, France)
-        'fr_94003',  # Haÿ-les-Roses (Val-de-Marne, France)
+        'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
     'fr_92001': [    # Antony (Hauts-de-Seine, France)
         'fr_75001',  # Paris (Paris, France)
         'fr_78004',  # Versailles (Yvelines, France)
         'fr_91003',  # Palaiseau (Essonne, France)
         'fr_92003',  # Boulogne-Billancourt (Hauts-de-Seine, France)
-        'fr_94003',  # Haÿ-les-Roses (Val-de-Marne, France)
+        'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
     'fr_92002': [    # Nanterre (Hauts-de-Seine, France)
         'fr_75001',  # Paris (Paris, France)
@@ -3023,16 +3023,16 @@ NEIGHBOURS = {
         'fr_91002',  # Évry (Essonne, France)
         'fr_93002',  # Raincy (Seine-St-Denis, France)
         'fr_94002',  # Nogent-sur-Marne (Val-de-Marne, France)
-        'fr_94003',  # Haÿ-les-Roses (Val-de-Marne, France)
+        'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
     'fr_94002': [    # Nogent-sur-Marne (Val-de-Marne, France)
         'fr_75001',  # Paris (Paris, France)
         'fr_93001',  # Bobigny (Seine-St-Denis, France)
         'fr_93002',  # Raincy (Seine-St-Denis, France)
         'fr_94001',  # Créteil (Val-de-Marne, France)
-        'fr_94003',  # Haÿ-les-Roses (Val-de-Marne, France)
+        'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
-    'fr_94003': [    # Haÿ-les-Roses (Val-de-Marne, France)
+    'fr_94003': [    # L'Haÿ-les-Roses (Val-de-Marne, France)
         'fr_75001',  # Paris (Paris, France)
         'fr_91002',  # Évry (Essonne, France)
         'fr_91003',  # Palaiseau (Essonne, France)
