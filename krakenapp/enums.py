@@ -303,7 +303,7 @@ ZONES = (
     ('fr_74004', 'Thonon-les-Bains (Haute-Savoie, France)'),
     ('fr_75001', 'Paris (Paris, France)'),
     ('fr_76001', 'Dieppe (Seine-Maritime, France)'),
-    ('fr_76002', 'Havre (Seine-Maritime, France)'),
+    ('fr_76002', 'Le Havre (Seine-Maritime, France)'),
     ('fr_76003', 'Rouen (Seine-Maritime, France)'),
     ('fr_77001', 'Meaux (Seine-et-Marne, France)'),
     ('fr_77002', 'Melun (Seine-et-Marne, France)'),
@@ -1309,7 +1309,7 @@ NEIGHBOURS = {
         'fr_27003',  # Évreux (Eure, France)
         'fr_28003',  # Dreux (Eure-et-Loir, France)
         'fr_61003',  # Mortagne-au-Perche (Orne, France)
-        'fr_76002',  # Havre (Seine-Maritime, France)
+        'fr_76002',  # Le Havre (Seine-Maritime, France)
         'fr_76003',  # Rouen (Seine-Maritime, France)
     ],
     'fr_27003': [    # Évreux (Eure, France)
@@ -2608,12 +2608,12 @@ NEIGHBOURS = {
     'fr_76001': [    # Dieppe (Seine-Maritime, France)
         'fr_27001',  # Andelys (Eure, France)
         'fr_60001',  # Beauvais (Oise, France)
-        'fr_76002',  # Havre (Seine-Maritime, France)
+        'fr_76002',  # Le Havre (Seine-Maritime, France)
         'fr_76003',  # Rouen (Seine-Maritime, France)
         'fr_80001',  # Abbeville (Somme, France)
         'fr_80002',  # Amiens (Somme, France)
     ],
-    'fr_76002': [    # Havre (Seine-Maritime, France)
+    'fr_76002': [    # Le Havre (Seine-Maritime, France)
         'fr_27002',  # Bernay (Eure, France)
         'fr_76001',  # Dieppe (Seine-Maritime, France)
         'fr_76003',  # Rouen (Seine-Maritime, France)
@@ -2622,7 +2622,7 @@ NEIGHBOURS = {
         'fr_27001',  # Andelys (Eure, France)
         'fr_27002',  # Bernay (Eure, France)
         'fr_76001',  # Dieppe (Seine-Maritime, France)
-        'fr_76002',  # Havre (Seine-Maritime, France)
+        'fr_76002',  # Le Havre (Seine-Maritime, France)
     ],
     'fr_77001': [    # Meaux (Seine-et-Marne, France)
         'fr_02001',  # Château-Thierry (Aisne, France)
