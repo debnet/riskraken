@@ -36,7 +36,7 @@ def portal(request):
     territories = player.territories.order_by('zone')
     actions = Action.objects.select_related('player', 'source', 'target', 'defender').filter(
         Q(player=player) | Q(defender=player, done=True), date__gt=datetime.date.today() - datetime.timedelta(days=5)
-    ).order_by('-date', '-type')
+    ).order_by('-date', '-type', 'creation_date')
     exchanges = Exchange.objects.select_related('sender', 'receiver').filter(
         Q(sender=player) | Q(receiver=player),
         Q(done=False) | Q(creation_date__gt=now() - datetime.timedelta(days=5))

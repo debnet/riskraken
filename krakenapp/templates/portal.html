@@ -238,7 +238,6 @@
                                                 <span class="text-muted">annulée</span>
                                             {% endif %}
                                         </th>
-                                        {% if action.player == player %}
                                         <td class="align-middle w-50 d-none d-sm-table-cell">
                                             <span>{{ action.source }}</span>
                                             <br />
@@ -253,26 +252,10 @@
                                                 {{ action.defender|default_if_none:"---" }}
                                             </small>
                                         </td>
-                                        {% else %}
-                                        <td class="align-middle w-50 d-none d-sm-table-cell">
-                                            <span>{{ action.target }}</span>
-                                            <br />
-                                            <small class="text-muted">
-                                                {{ action.defender|default_if_none:"---" }}
-                                            </small>
-                                        </td>
-                                        <td class="align-middle w-50">
-                                            <span>{{ action.source }}</span>
-                                            <br />
-                                            <small class="text-muted">
-                                                {{ action.player }}
-                                            </small>
-                                        </td>
-                                        {% endif %}
                                         <td class="text-center align-middle d-none d-sm-table-cell">
                                             <span class="text-nowrap">
                                                 <span title="Nombre de troupes" data-toggle="tooltip" data-placement="left">
-                                                    <strong>{{ action.amount }}</strong>
+                                                    <strong>{{ action.details.attacker.sent|default:action.amount }}</strong>
                                                     <i class="fa fa-users"></i>
                                                 </span>
                                                 {% if action.done and action.type == 'A' and not action.details.cancelled %}
