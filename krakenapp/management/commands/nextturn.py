@@ -145,7 +145,7 @@ class Command(BaseCommand):
                 action.details.update(troops=max_troops)
             action.done = True
             action.save()
-        for exchange in Exchange.objects.filter(done=False, accepted=True):
+        for exchange in Exchange.objects.filter(sender__auto=False, receiver__auto=False, done=False, accepted=True):
             exchange.sender.money += exchange.receiver_money
             exchange.sender.reserve += exchange.receiver_troops
             exchange.sender.save(update_fields=('money', 'reserve', ))
