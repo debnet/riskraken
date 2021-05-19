@@ -88,6 +88,18 @@ def portal(request):
                     messages.warning(request, f"Vos territoires n'ont pas pu être renforcés car {e} !")
                 except:
                     pass
+            elif 'capital' in request.POST:
+                territory = Territory.objects.filter(
+                    player=player, player__capital__isnull=True, id=request.POST['capital']
+                ).first()
+                if territory:
+                    player.capital = territory
+                    player.save(update_fields=('capital', ))
+                    messages.success(
+                        request,
+                        f"Votre nouvelle capitale a été installée à <strong>{territory}</strong> !")
+                else:
+                    messages.warning(request, "Le territoire sélectionné ne peut être défini comme votre capitale.")
         elif form_type == 'action':
             if 'delete' in request.POST:
                 Action.objects.filter(player=player, id=request.POST['delete']).delete()
@@ -130,16 +142,6 @@ def portal(request):
                     exchange.accepted = False
                     exchange.save(update_fields=('accepted', ))
                     messages.success(request, "L'accord a été rejeté avec succès, l'expéditeur a été remboursé.")
-        elif 'capital' in request.POST:
-            territory = Territory.objects.filter(
-                player=player, player__capital__isnull=True, id=request.POST['capital']
-            ).first()
-            if territory:
-                player.capital = territory
-                player.save(update_fields=('capital', ))
-                messages.success(request, f"Votre nouvelle capitale a été installée à <strong>{territory}</strong> !")
-            else:
-                messages.warning(request, "Le territoire sélectionné ne peut être défini comme votre capitale.")
         else:
             form = UserEditForm(request.POST, request.FILES, instance=player)
             if not form.is_valid():
