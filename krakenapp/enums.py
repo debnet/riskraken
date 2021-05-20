@@ -125,7 +125,7 @@ ZONES = (
     ('fr_26001', 'Die (Drôme, France)'),
     ('fr_26002', 'Nyons (Drôme, France)'),
     ('fr_26003', 'Valence (Drôme, France)'),
-    ('fr_27001', 'Andelys (Eure, France)'),
+    ('fr_27001', 'Les Andelys (Eure, France)'),
     ('fr_27002', 'Bernay (Eure, France)'),
     ('fr_27003', 'Évreux (Eure, France)'),
     ('fr_28001', 'Chartres (Eure-et-Loir, France)'),
@@ -1293,7 +1293,7 @@ NEIGHBOURS = {
         'fr_38001',  # Grenoble (Isère, France)
         'fr_38003',  # Vienne (Isère, France)
     ],
-    'fr_27001': [    # Andelys (Eure, France)
+    'fr_27001': [    # Les Andelys (Eure, France)
         'fr_27002',  # Bernay (Eure, France)
         'fr_27003',  # Évreux (Eure, France)
         'fr_28003',  # Dreux (Eure-et-Loir, France)
@@ -1305,7 +1305,7 @@ NEIGHBOURS = {
     ],
     'fr_27002': [    # Bernay (Eure, France)
         'fr_14003',  # Lisieux (Calvados, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_27003',  # Évreux (Eure, France)
         'fr_28003',  # Dreux (Eure-et-Loir, France)
         'fr_61003',  # Mortagne-au-Perche (Orne, France)
@@ -1313,7 +1313,7 @@ NEIGHBOURS = {
         'fr_76003',  # Rouen (Seine-Maritime, France)
     ],
     'fr_27003': [    # Évreux (Eure, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_27002',  # Bernay (Eure, France)
         'fr_28003',  # Dreux (Eure-et-Loir, France)
     ],
@@ -1334,7 +1334,7 @@ NEIGHBOURS = {
         'fr_45002',  # Orléans (Loiret, France)
     ],
     'fr_28003': [    # Dreux (Eure-et-Loir, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_27002',  # Bernay (Eure, France)
         'fr_27003',  # Évreux (Eure, France)
         'fr_28001',  # Chartres (Eure-et-Loir, France)
@@ -2205,7 +2205,7 @@ NEIGHBOURS = {
         'fr_59003',  # Douai (Nord, France)
     ],
     'fr_60001': [    # Beauvais (Oise, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_60002',  # Clermont (Oise, France)
         'fr_60004',  # Senlis (Oise, France)
         'fr_76001',  # Dieppe (Seine-Maritime, France)
@@ -2606,7 +2606,7 @@ NEIGHBOURS = {
         'fr_94003',  # L'Haÿ-les-Roses (Val-de-Marne, France)
     ],
     'fr_76001': [    # Dieppe (Seine-Maritime, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_60001',  # Beauvais (Oise, France)
         'fr_76002',  # Le Havre (Seine-Maritime, France)
         'fr_76003',  # Rouen (Seine-Maritime, France)
@@ -2619,7 +2619,7 @@ NEIGHBOURS = {
         'fr_76003',  # Rouen (Seine-Maritime, France)
     ],
     'fr_76003': [    # Rouen (Seine-Maritime, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_27002',  # Bernay (Eure, France)
         'fr_76001',  # Dieppe (Seine-Maritime, France)
         'fr_76002',  # Le Havre (Seine-Maritime, France)
@@ -2665,7 +2665,7 @@ NEIGHBOURS = {
         'fr_94001',  # Créteil (Val-de-Marne, France)
     ],
     'fr_78001': [    # Mantes-la-Jolie (Yvelines, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_28003',  # Dreux (Eure-et-Loir, France)
         'fr_78002',  # Rambouillet (Yvelines, France)
         'fr_78003',  # Saint-Germain-en-Laye (Yvelines, France)
@@ -3056,7 +3056,7 @@ NEIGHBOURS = {
         'fr_95003',  # Pontoise (Val-D'Oise, France)
     ],
     'fr_95003': [    # Pontoise (Val-D'Oise, France)
-        'fr_27001',  # Andelys (Eure, France)
+        'fr_27001',  # Les Andelys (Eure, France)
         'fr_60001',  # Beauvais (Oise, France)
         'fr_60004',  # Senlis (Oise, France)
         'fr_78001',  # Mantes-la-Jolie (Yvelines, France)
