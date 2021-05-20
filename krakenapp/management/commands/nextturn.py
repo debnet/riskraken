@@ -111,7 +111,7 @@ class Command(BaseCommand):
                         defender_roll.wins = True
                         action.source.troops -= 1
                         attacker_losses += 1
-                attacker_remains, defender_remains = action.amount - attacker_losses, action.target.troops
+                attacker_remains, defender_remains = attacker_troops - attacker_losses, action.target.troops
                 action.details['attacker'].update(
                     remains=attacker_remains,
                     losses=attacker_losses)
@@ -154,7 +154,6 @@ class Command(BaseCommand):
             exchange.receiver.save(update_fields=('money', 'reserve', ))
             exchange.done = True
             exchange.save(update_fields=('done', ))
-
 
     def update_players(self, date=None):
         date = date or datetime.date.today()
