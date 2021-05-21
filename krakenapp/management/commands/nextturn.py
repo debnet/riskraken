@@ -72,7 +72,8 @@ class Command(BaseCommand):
                 is_auto = bool(action.defender and action.defender.auto)
                 is_capital = bool(action.defender and action.defender.capital == action.target)
                 if is_auto:
-                    troops = min(action.defender.reserve, max(attacker_troops - action.target.troops, 0))
+                    troops = min(action.defender.reserve, max(
+                        attacker_troops - action.target.troops + 1, action.target.limit, 0))
                     if troops:
                         auto_reason = f"Renforcement automatique à cause de l'attaque #{action.id} du {action.date:%x}"
                         action.target.troops += troops
