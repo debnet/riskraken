@@ -179,12 +179,13 @@ class Command(BaseCommand):
                         if cost <= player.money:
                             setattr(territory, code, level + 1)
                             player.money -= cost
-                        if player.reserve and territory.troops < territory.limit:
-                            troops = min(player.reserve, territory.limit - territory.troops)
-                            territory.troops += troops
-                            player.reserve -= troops
-                        if territory.modified:
-                            territory.save(_reason=f"Amélioration et renforcement automatique du {date}")
+                            break
+                    if player.reserve and territory.troops < territory.limit:
+                        troops = min(player.reserve, territory.limit - territory.troops)
+                        territory.troops += troops
+                        player.reserve -= troops
+                    if territory.modified:
+                        territory.save(_reason=f"Amélioration et renforcement automatique du {date}")
             player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
