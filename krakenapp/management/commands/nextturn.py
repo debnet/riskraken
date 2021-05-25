@@ -191,7 +191,8 @@ class Command(BaseCommand):
                     (territory, len(neighbours)) for territory, neighbours in hostile_neighbours.items()
                     if territory.player == player), key=lambda e: -e[1])
                 for territory, nb_neighbours in territories:
-                    print(territory, nb_neighbours)
+                    if not nb_neighbours:
+                        continue
                     if player.reserve and territory.troops < territory.limit:
                         troops = min(player.reserve, territory.limit - territory.troops)
                         territory.troops += troops
