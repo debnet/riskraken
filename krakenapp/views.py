@@ -271,7 +271,7 @@ def map_stats(request, type):
                 aliases=("Nom", "Province", "Région", "Prétendants", "Action"))
             popup.add_to(choropleth.geojson)
             choropleth.add_to(maps)
-    elif type in ('troops', 'forts', 'taxes', 'prods'):
+    elif type in ('troops', 'forts', 'taxes', 'prods', 'limit'):
         data = dict(Territory.objects.values_list('zone', type))
         territories, world = get_territories(request.user)
         for player, zones in sorted(territories.items(), key=lambda e: str(e[0])):
