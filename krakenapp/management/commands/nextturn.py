@@ -5,10 +5,9 @@ from random import randint, seed
 from itertools import chain
 
 from django.core.management.base import BaseCommand
-from django.db.models import F
 from django.db.transaction import atomic
 
-from krakenapp.enums import COSTS
+from krakenapp.enums import COSTS, NEIGHBOURS
 from krakenapp.models import Action, Exchange, Player, Territory
 
 
@@ -162,6 +161,13 @@ class Command(BaseCommand):
 
     def update_players(self, date=None):
         date = date or datetime.date.today()
+        player_territories = {territory.zone: territory for territory in Territory.objects.filter(player__isnull=False)}
+        hostile_neighbours = {territory: [] for territory in player_territories.values()}
+        for zone, territory in player_territories.items():
+            for nzone in NEIGHBOURS[zone]:
+                neighbour = player_territories.get(nzone)
+                if neighbour and neighbour.player != territory.player:
+                    hostile_neighbours[territory].append(neighbour)
         players = Player.objects.with_rates()
         for player in players:
             if not player.count:
@@ -169,8 +175,7 @@ class Command(BaseCommand):
             player.money += player.taxes or 0
             player.reserve += player.prods or 0
             if player.auto:
-                for territory in Territory.objects.filter(player=player).order_by(
-                        F('claim__reason').asc(nulls_last=True), 'taxes', 'prods', 'limit', 'forts'):
+                for territory in Territory.objects.filter(player=player).order_by(*COSTS.keys()):
                     if not player.capital:
                         player.capital = territory
                     for code, func in reversed(COSTS.items()):
@@ -180,12 +185,19 @@ class Command(BaseCommand):
                             setattr(territory, code, level + 1)
                             player.money -= cost
                             break
+                    if territory.modified:
+                        territory.save(_reason=f"Amélioration automatique du {date}")
+                territories = sorted((
+                    (territory, len(neighbours)) for territory, neighbours in hostile_neighbours.items()
+                    if territory.player == player), key=lambda e: -e[1])
+                for territory, nb_neighbours in territories:
+                    print(territory, nb_neighbours)
                     if player.reserve and territory.troops < territory.limit:
                         troops = min(player.reserve, territory.limit - territory.troops)
                         territory.troops += troops
                         player.reserve -= troops
                     if territory.modified:
-                        territory.save(_reason=f"Amélioration et renforcement automatique du {date}")
+                        territory.save(_reason=f"Renforcement automatique du {date}")
             player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
