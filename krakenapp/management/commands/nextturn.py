@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 action.save()
                 continue
             if action.type == 'A':
-                reason = f"Attaque #{action.id} du {action.date:%x}"
+                reason = f"Attaque #{action.id} du {action.date}"
                 action.defender = action.target.player
                 if action.player == action.defender:
                     action.done = True
@@ -70,15 +70,16 @@ class Command(BaseCommand):
                     action.save()
                     continue
                 is_auto = bool(action.defender and action.defender.auto)
+                is_staff = bool(action.defender and action.defender.is_staff)
                 is_capital = bool(action.defender and action.defender.capital == action.target)
-                if is_auto:
+                if is_auto and is_staff:
                     troops = attacker_troops - action.target.troops + 1
                     troops = (
                         action.target.limit - action.target.troops
                         if troops + action.target.troops > action.target.limit else troops)
                     troops = min(troops, action.defender.reserve)
                     if troops:
-                        auto_reason = f"Renforcement automatique à cause de l'attaque #{action.id} du {action.date:%x}"
+                        auto_reason = f"Renforcement automatique à cause de l'attaque #{action.id} du {action.date}"
                         action.target.troops += troops
                         action.target.save(update_fields=('troops', ), _reason=auto_reason)
                         action.defender.reserve -= troops
@@ -140,7 +141,7 @@ class Command(BaseCommand):
                 if action.target.modified:
                     action.target.save(_reason=reason)
             elif action.type == 'M':
-                reason = f"Manoeuvre #{action.id} du {action.date:%x}"
+                reason = f"Manoeuvre #{action.id} du {action.date}"
                 max_troops = min(action.target.limit - action.target.troops, action.amount)
                 action.source.troops -= max_troops
                 action.source.save(update_fields=('troops', ), _reason=reason)
@@ -165,23 +166,25 @@ class Command(BaseCommand):
         for player in players:
             if not player.count:
                 continue
-            if player.auto:
-                get_taxes_cost, get_prods_cost = COSTS['taxes'], COSTS['prods']
-                for territory in Territory.objects.filter(player=player).order_by(
-                        F('claim__reason').asc(nulls_last=True), 'taxes', 'prods'):
-                    if not player.capital:
-                        player.capital = territory
-                    taxes_cost, prods_cost = get_taxes_cost(territory.taxes), get_prods_cost(territory.prods)
-                    if territory.taxes > territory.prods and player.money >= prods_cost:
-                        territory.prods += 1
-                        player.money -= prods_cost
-                    elif player.money >= taxes_cost:
-                        territory.taxes += 1
-                        player.money -= taxes_cost
-                    if territory.modified:
-                        territory.save(_reason=f"Amélioration automatique du {date:%x}")
             player.money += player.taxes or 0
             player.reserve += player.prods or 0
+            if player.auto:
+                for territory in Territory.objects.filter(player=player).order_by(
+                        F('claim__reason').asc(nulls_last=True), 'taxes', 'prods', 'limit', 'forts'):
+                    if not player.capital:
+                        player.capital = territory
+                    for code, func in reversed(COSTS.items()):
+                        level = getattr(territory, code, 0)
+                        cost = func(level)
+                        if cost <= player.money:
+                            setattr(territory, code, level + 1)
+                            player.money -= cost
+                        if player.reserve and territory.troops < territory.limit:
+                            troops = min(player.reserve, territory.limit - territory.troops)
+                            territory.troops += troops
+                            player.reserve -= troops
+                        if territory.modified:
+                            territory.save(_reason=f"Amélioration et renforcement automatique du {date}")
             player.save(update_fields=('capital', 'money', 'reserve'))
         for territory in Territory.objects.filter(player__isnull=True):
             troops = randint(territory.limit - territory.troops, territory.limit) // (territory.limit - territory.prods)
