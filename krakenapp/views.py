@@ -6,7 +6,8 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.validators import MaxValueValidator
-from django.db.models import Count, Max, Q
+from django.db.models import Count, F, Max, Q, Sum, IntegerField
+from django.db.models.functions import Cast
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.html import escape
 from django.utils.timezone import now
@@ -160,6 +161,67 @@ def portal(request):
         'exchanges': exchanges,
         'form': form,
         'last_claim': last_claim,
+    }
+
+
+@never_cache
+@login_required
+@render_to('actions.html')
+def action_history(request):
+    player_id = request.user.id
+    if request.user.is_superuser and 'player' in request.GET:
+        player_id = request.GET['player'] or player_id
+    player = Player.objects.with_rates().get(id=player_id)
+    actions = Action.objects.select_related('player', 'source', 'target', 'defender').filter(
+        Q(player=player) | Q(defender=player, done=True)
+    ).order_by('-date', '-type', 'creation_date')
+    return {
+        'player': player,
+        'actions': actions
+    }
+
+
+@never_cache
+@login_required
+@render_to('leaderboard.html')
+def leaderboard(request):
+    factors = dict(
+        provinces=11,
+        taxes=12,
+        limits=13,
+        prods=14,
+        forts=15)
+    for key, value in request.GET.items():
+        if value.isdigit():
+            factors[key] = int(value)
+    players = Player.objects.annotate(
+        provinces=Count('territories'),
+        taxes=Sum('territories__taxes'),
+        prods=Sum('territories__prods'),
+        forts=Sum('territories__forts'),
+    ).annotate(
+        limits=Sum('territories__limit') - F('provinces'),
+    ).annotate(
+        score=(
+            (F('provinces') * factors['provinces']) +
+            (F('taxes') * factors['taxes']) +
+            (F('limits') * factors['limits']) +
+            (F('prods') * factors['prods']) +
+            (F('forts') * factors['forts']))
+    ).order_by('-score').filter(score__isnull=False)
+    losses_as_attacker = Action.objects.filter(done=True, type='A').values('player').annotate(
+        losses=Sum(Cast(F('details__attacker__losses'), output_field=IntegerField())))
+    losses_as_attacker = {losses['player']: losses['losses'] for losses in losses_as_attacker}
+    losses_as_defender = Action.objects.filter(done=True, type='A').values('defender').annotate(
+        losses=Sum(Cast(F('details__defender__losses'), output_field=IntegerField())))
+    losses_as_defender = {losses['defender']: losses['losses'] for losses in losses_as_defender}
+    losses = [
+        (player, losses_as_attacker.get(player.id) or 0, losses_as_defender.get(player.id) or 0)
+        for player in Player.objects.order_by('full_name')
+        if player.id in losses_as_attacker or player.id in losses_as_defender]
+    return {
+        'players': players,
+        'losses': losses,
     }
 
 

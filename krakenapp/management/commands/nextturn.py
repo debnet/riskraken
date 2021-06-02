@@ -178,7 +178,7 @@ class Command(BaseCommand):
                 for territory in Territory.objects.filter(player=player).order_by(*COSTS.keys()):
                     if not player.capital:
                         player.capital = territory
-                    for code, func in reversed(COSTS.items()):
+                    for code, func in COSTS.items():
                         level = getattr(territory, code, 0)
                         cost = func(level)
                         if cost <= player.money:

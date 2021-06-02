@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static compress crispy_forms_tags front %}
+
+{% block content %}
+    <div class="container py-5">
+        <div id="infos" class="card rounded shadow">
+            <div class="card-header text-center">
+                <i class="fa fa-hourglass"></i>
+                <span>Historique des actions</span>
+            </div>
+            <div id="infos-body" class="card-body">
+                {% include "_actions.html" with simple=1 %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
