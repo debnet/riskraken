@@ -13,7 +13,7 @@
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 0">Rang</th>
-                            <th>Joueur</th>
+                            <th colspan="2">Joueur</th>
                             <th class="text-center" style="width: 0">Score</th>
                         </tr>
                     </thead>
@@ -21,7 +21,10 @@
                         {% for player in players %}
                         <tr>
                             <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
-                            <td>{% if player.image %}<img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px"> {% endif %}{{ player }}</td>
+                            <td class="text-center" style="width: 0">{% if player.image %}
+                                <img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
+                            </td>
+                            <td>{{ player }}</td>
                             <td class="text-center font-weight-bold">{{ player.score|intcomma }}</td>
                         </tr>
                         {% endfor %}
@@ -39,7 +42,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Joueur</th>
+                            <th colspan="2">Joueur</th>
                             <th class="text-center" style="width: 0">Attaque</th>
                             <th class="text-center" style="width: 0">Défense</th>
                         </tr>
@@ -47,7 +50,10 @@
                     <tbody>
                         {% for player, attacker_losses, defender_losses in losses %}
                         <tr>
-                            <td>{% if player.image %}<img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px"> {% endif %}{{ player }}</td>
+                            <td class="text-center" style="width: 0">{% if player.image %}
+                                <img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
+                            </td>
+                            <td>{{ player }}</td>
                             <td class="text-center font-weight-bold">{{ attacker_losses|intcomma }}</td>
                             <td class="text-center font-weight-bold">{{ defender_losses|intcomma }}</td>
                         </tr>
