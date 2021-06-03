@@ -14,6 +14,23 @@
                         <tr>
                             <th class="text-center" style="width: 0">Rang</th>
                             <th colspan="2">Joueur</th>
+                            {% if request.user.is_superuser %}
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-map"></i>
+                                </th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-coins"></i>
+                                </th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-plus-square"></i>
+                                </th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fa fa-house-user"></i>
+                                </th>
+                                <th class="text-center" style="width: 0">
+                                    <i class="fab fa-fort-awesome"></i>
+                                </th>
+                            {% endif %}
                             <th class="text-center" style="width: 0">Score</th>
                         </tr>
                     </thead>
@@ -21,12 +38,62 @@
                         {% for player in players %}
                         <tr>
                             <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
-                            <td class="text-center" style="width: 0">{% if player.image %}
-                                <img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
+                            <td class="text-center" style="width: 0">
+                                {% if player.image %}<img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
                             </td>
                             <td>{{ player }}</td>
+                            {% if request.user.is_superuser %}
+                                <td class="text-center" style="width: 0">{{ player.provinces }}</td>
+                                <td class="text-center" style="width: 0">{{ player.taxes }}</td>
+                                <td class="text-center" style="width: 0">{{ player.limits }}</td>
+                                <td class="text-center" style="width: 0">{{ player.prods }}</td>
+                                <td class="text-center" style="width: 0">{{ player.forts }}</td>
+                            {% endif %}
                             <td class="text-center font-weight-bold">{{ player.score|intcomma }}</td>
                         </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="py-3"></div>
+        <div id="infos" class="card rounded shadow">
+            <div class="card-header text-center">
+                <i class="fa fa-flag"></i>
+                <span>Dernières conquêtes</span>
+            </div>
+            <div class="card-body">
+                {% regroup conquests by date as conquests_groups %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-left" colspan="2">Attaquant</th>
+                            <th class="text-center">Territoire</th>
+                            <th class="text-right" colspan="2">Défenseur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date, conquests in conquests_groups %}
+                            <tr class="thead-dark">
+                                <th colspan="5" class="text-center">
+                                    {{ date }}
+                                </th>
+                            </tr>
+                            {% for conquest in conquests %}
+                                <tr>
+                                    <td style="width: 0">
+                                        {% if conquest.player.image %}<img src="{{ conquest.player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
+                                    </td>
+                                    <td class="text-left">{{ conquest.player }}</td>
+                                    <td class="text-center">{{ conquest.target.get_zone_display }}</td>
+                                    <td class="text-right{% if not conquest.defender %} text-muted{% endif %}">
+                                        {{ conquest.defender|default:"Indépendant" }}
+                                    </td>
+                                    <td style="width: 0">
+                                        {% if conquest.defender.image %}<img src="{{ conquest.defender.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -42,20 +109,24 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th class="text-center" style="width: 0">Rang</th>
                             <th colspan="2">Joueur</th>
                             <th class="text-center" style="width: 0">Attaque</th>
                             <th class="text-center" style="width: 0">Défense</th>
+                            <th class="text-center" style="width: 0">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for player, attacker_losses, defender_losses in losses %}
+                        {% for player, attacker_losses, defender_losses, total_losses in losses %}
                         <tr>
-                            <td class="text-center" style="width: 0">{% if player.image %}
-                                <img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
+                            <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
+                            <td class="text-center" style="width: 0">
+                                {% if player.image %}<img src="{{ player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
                             </td>
                             <td>{{ player }}</td>
-                            <td class="text-center font-weight-bold">{{ attacker_losses|intcomma }}</td>
-                            <td class="text-center font-weight-bold">{{ defender_losses|intcomma }}</td>
+                            <td class="text-center">{{ attacker_losses|intcomma }}</td>
+                            <td class="text-center">{{ defender_losses|intcomma }}</td>
+                            <td class="text-center font-weight-bold">{{ total_losses|intcomma }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

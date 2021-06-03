@@ -1,5 +1,5 @@
 {% if actions %}
-{% regroup actions by date as action_groups %}
+    {% regroup actions by date as action_groups %}
     <form method="post" action="{{ request.get_full_path }}">
         <input type="hidden" name="type" value="action">
         {% csrf_token %}

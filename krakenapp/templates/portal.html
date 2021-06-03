@@ -170,36 +170,44 @@
                 </a>
             </div>
             <div id="actions-body" class="card-body collapse show">
-                <div class="btn-group">
-                    <a href="{% url "front:map_forces" %}?player={{ request.user.id }}"
-                       class="btn btn-primary">
-                        <i class="fa fa-route"></i>
-                        <span>Planifier sur la carte</span>
-                    </a>
-                    <a href="{% url "front:map_stats" "troops" %}?player={{ request.user.id }}"
-                       class="btn btn-danger d-none d-sm-inline"
-                       title="Carte des troupes" data-toggle="tooltip">
-                        <i class="fa fa-users"></i>
-                    </a>
-                    <a href="{% url "front:map_stats" "taxes" %}?player={{ request.user.id }}"
-                       class="btn btn-warning d-none d-sm-inline"
-                       title="Carte des taxes" data-toggle="tooltip">
-                        <i class="fa fa-coins"></i>
-                    </a>
-                    <a href="{% url "front:map_stats" "forts" %}?player={{ request.user.id }}"
-                       class="btn btn-success d-none d-sm-inline"
-                       title="Carte des forts" data-toggle="tooltip">
-                        <i class="fab fa-fort-awesome"></i>
-                    </a>
-                    <a href="{% url "front:map_stats" "prods" %}?player={{ request.user.id }}"
-                       class="btn btn-info d-none d-sm-inline"
-                       title="Carte des casernes" data-toggle="tooltip">
-                        <i class="fa fa-house-user"></i>
-                    </a>
-                    <a href="{% url "front:action_history" %}?player={{ request.user.id }}" class="btn btn-primary">
-                        <i class="fa fa-hourglass"></i>
-                        <span>Historique</span>
-                    </a>
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <a href="{% url "front:map_forces" %}?player={{ request.user.id }}"
+                               class="btn btn-primary">
+                                <i class="fa fa-route"></i>
+                                <span>Planifier sur la carte</span>
+                            </a>
+                            <a href="{% url "front:action_history" %}?player={{ request.user.id }}"
+                               class="btn btn-primary" title="Historique des actions" data-toggle="tooltip">
+                                <i class="fa fa-hourglass"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col text-right">
+                        <div class="btn-group d-none d-md-inline-flex">
+                            <a href="{% url "front:map_stats" "troops" %}?player={{ request.user.id }}"
+                               class="btn btn-danger" title="Carte des troupes" data-toggle="tooltip">
+                                <i class="fa fa-users"></i>
+                            </a>
+                            <a href="{% url "front:map_stats" "taxes" %}?player={{ request.user.id }}"
+                               class="btn btn-warning" title="Carte des taxes" data-toggle="tooltip">
+                                <i class="fa fa-coins"></i>
+                            </a>
+                            <a href="{% url "front:map_stats" "forts" %}?player={{ request.user.id }}"
+                               class="btn btn-success" title="Carte des forts" data-toggle="tooltip">
+                                <i class="fab fa-fort-awesome"></i>
+                            </a>
+                            <a href="{% url "front:map_stats" "prods" %}?player={{ request.user.id }}"
+                               class="btn btn-info" title="Carte des casernes" data-toggle="tooltip">
+                                <i class="fa fa-house-user"></i>
+                            </a>
+                            <a href="{% url "front:leaderboard" %}"
+                               class="btn btn-secondary" title="Leaderboard & Conquêtes" data-toggle="tooltip">
+                                <i class="fa fa-trophy"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 {% include "_actions.html" %}
             </div>

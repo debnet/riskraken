@@ -181,7 +181,6 @@ def action_history(request):
     }
 
 
-@never_cache
 @login_required
 @render_to('leaderboard.html')
 def leaderboard(request):
@@ -200,7 +199,7 @@ def leaderboard(request):
         prods=Sum('territories__prods'),
         forts=Sum('territories__forts'),
     ).annotate(
-        limits=Sum('territories__limit') - F('provinces'),
+        limits=Sum('territories__limit') - F('provinces') * 10,
     ).annotate(
         score=(
             (F('provinces') * factors['provinces']) +
@@ -215,13 +214,18 @@ def leaderboard(request):
     losses_as_defender = Action.objects.filter(done=True, type='A').values('defender').annotate(
         losses=Sum(Cast(F('details__defender__losses'), output_field=IntegerField())))
     losses_as_defender = {losses['defender']: losses['losses'] for losses in losses_as_defender}
-    losses = [
-        (player, losses_as_attacker.get(player.id) or 0, losses_as_defender.get(player.id) or 0)
-        for player in Player.objects.order_by('full_name')
-        if player.id in losses_as_attacker or player.id in losses_as_defender]
+    losses = []
+    for player in players:
+        atk_losses, def_losses = losses_as_attacker.get(player.id) or 0, losses_as_defender.get(player.id) or 0
+        losses.append((player, atk_losses, def_losses, atk_losses + def_losses))
+    losses = sorted(losses, key=lambda e: e[3], reverse=True)
+    conquests = Action.objects.select_related('player', 'defender', 'target').filter(
+        done=True, type='A', details__conquered=True, date__gt=datetime.date.today() - datetime.timedelta(days=5)
+    ).order_by('-date', 'player__full_name', 'creation_date')
     return {
         'players': players,
         'losses': losses,
+        'conquests': conquests,
     }
 
 
