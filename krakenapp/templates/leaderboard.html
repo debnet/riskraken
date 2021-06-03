@@ -81,7 +81,7 @@
                             </tr>
                             {% for conquest in conquests %}
                                 <tr>
-                                    <td style="width: 0">
+                                    <td class="text-center" style="width: 0">
                                         {% if conquest.player.image %}<img src="{{ conquest.player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
                                     </td>
                                     <td class="text-left">{{ conquest.player }}</td>
@@ -89,7 +89,7 @@
                                     <td class="text-right{% if not conquest.defender %} text-muted{% endif %}">
                                         {{ conquest.defender|default:"Indépendant" }}
                                     </td>
-                                    <td style="width: 0">
+                                    <td class="text-center" style="width: 0">
                                         {% if conquest.defender.image %}<img src="{{ conquest.defender.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
                                     </td>
                                 </tr>
