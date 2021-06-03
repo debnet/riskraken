@@ -186,8 +186,8 @@ def action_history(request):
 def leaderboard(request):
     factors = dict(
         provinces=11,
-        taxes=12,
-        limits=13,
+        limits=12,
+        taxes=13,
         prods=14,
         forts=15)
     for key, value in request.GET.items():
@@ -203,8 +203,8 @@ def leaderboard(request):
     ).annotate(
         score=(
             (F('provinces') * factors['provinces']) +
-            (F('taxes') * factors['taxes']) +
             (F('limits') * factors['limits']) +
+            (F('taxes') * factors['taxes']) +
             (F('prods') * factors['prods']) +
             (F('forts') * factors['forts']))
     ).order_by('-score').filter(score__isnull=False)
