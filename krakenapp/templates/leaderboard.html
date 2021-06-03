@@ -81,15 +81,17 @@
                             </tr>
                             {% for conquest in conquests %}
                                 <tr>
-                                    <td class="text-center" style="width: 0">
+                                    <td class="text-center align-middle" style="width: 0">
                                         {% if conquest.player.image %}<img src="{{ conquest.player.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
                                     </td>
-                                    <td class="text-left">{{ conquest.player }}</td>
-                                    <td class="text-center">{{ conquest.target.get_zone_display }}</td>
-                                    <td class="text-right{% if not conquest.defender %} text-muted{% endif %}">
+                                    <td class="text-left align-middle">{{ conquest.player }}</td>
+                                    <td class="text-center align-middle font-weight-bold">
+                                        {{ conquest.target.get_zone_display|reformat }}
+                                    </td>
+                                    <td class="text-right align-middle{% if not conquest.defender %} text-muted{% endif %}">
                                         {{ conquest.defender|default:"Indépendant" }}
                                     </td>
-                                    <td class="text-center" style="width: 0">
+                                    <td class="text-center align-middle" style="width: 0">
                                         {% if conquest.defender.image %}<img src="{{ conquest.defender.image.url }}" style="max-height: 25px; max-width: 50px">{% endif %}
                                     </td>
                                 </tr>
